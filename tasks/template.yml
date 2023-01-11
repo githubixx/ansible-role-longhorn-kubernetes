@@ -1,0 +1,79 @@
+---
+# Copyright (C) 2023 Robert Wimmer
+# SPDX-License-Identifier: GPL-3.0-or-later
+
+- name: Include Helm repository tasks
+  ansible.builtin.include_tasks:
+    file: includes/helm_repository.yml
+
+- name: Render values
+  block:
+    - name: Create temporary file for Helm values
+      ansible.builtin.tempfile:
+        state: file
+        suffix: longhorn_values
+      delegate_to: "{{ longhorn_delegate_to }}"
+      run_once: true
+      register: longhorn__values_tmp_file
+
+    - name: Select values file for Helm template
+      ansible.builtin.template:
+        src: "{{ lookup('first_found', params) }}"
+        dest: "{{ longhorn__values_tmp_file.path }}"
+        mode: 0600
+      delegate_to: "{{ longhorn_delegate_to }}"
+      run_once: true
+      vars:
+        params:
+          files:
+            - longhorn_values_user.yml.j2
+            - longhorn_values_default.yml.j2
+          paths:
+            - templates
+
+    - name: Render template
+      kubernetes.core.helm_template:
+        chart_ref: "{{ longhorn_chart_name }}"
+        chart_version: "{{ longhorn_chart_version }}"
+        release_namespace: "{{ longhorn_namespace }}"
+        update_repo_cache: true
+        values_files:
+          - "{{ longhorn__values_tmp_file.path }}"
+      run_once: true
+      delegate_to: "{{ longhorn_delegate_to }}"
+      register: longhorn__template
+
+    - name: Render template (helm command executed)
+      when:
+        - longhorn__template is defined
+        - longhorn__template.command is defined
+        - longhorn_helm_show_commands
+      ansible.builtin.debug:
+        var: longhorn__template.command
+      delegate_to: "{{ longhorn_delegate_to }}"
+      run_once: true
+
+    - name: Create directory to store template.yml
+      ansible.builtin.file:
+        dest: "{{ longhorn_template_output_directory }}"
+        state: directory
+        mode: 0755
+      run_once: true
+      delegate_to: "{{ longhorn_delegate_to }}"
+
+    - name: Write templates to file
+      ansible.builtin.copy:
+        dest: "{{ longhorn_template_output_directory }}/template.yml"
+        content: "{{ longhorn__template.stdout }}"
+        mode: 0644
+      run_once: true
+      delegate_to: "{{ longhorn_delegate_to }}"
+
+    - name: Delete temporary file for Helm values
+      ansible.builtin.include_tasks:
+        file: includes/delete_helm_values_file.yml
+
+  rescue:
+    - name: Delete temporary file for Helm values
+      ansible.builtin.include_tasks:
+        file: includes/delete_helm_values_file.yml

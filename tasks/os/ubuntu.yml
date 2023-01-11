@@ -1,0 +1,47 @@
+---
+# Copyright (C) 2023 Robert Wimmer
+# SPDX-License-Identifier: GPL-3.0-or-later
+
+- name: Install packages required for Longhorn
+  ansible.builtin.package:
+    name: "{{ longhorn_required_packages }}"
+    state: "present"
+
+- name: Ensure iscsi_tcp kernel module
+  community.general.modprobe:
+    name: iscsi_tcp
+    state: present
+  register: longhorn__iscsi_tcp_module_enabled
+  until: longhorn__iscsi_tcp_module_enabled is succeeded
+  retries: 10
+  delay: 10
+  failed_when: longhorn__iscsi_tcp_module_enabled is failure
+  notify:
+    - restart multipathd
+
+- name: Ensure iscsid
+  ansible.builtin.service:
+    name: "iscsid"
+    state: "started"
+    enabled: true
+
+- name: Ensure multipathd conf.d directory
+  ansible.builtin.file:
+    path: "{{ longhorn_multipathd_blacklist_directory }}"
+    state: directory
+    mode: "{{ longhorn_multipathd_blacklist_directory_perm }}"
+    owner: "root"
+    group: "root"
+
+- name: Ensure multipathd blacklist for Longhorn
+  when:
+    - longhorn_multipathd_blacklist_directory
+    - longhorn_multipathd_blacklist_file
+  ansible.builtin.copy:
+    src: "files/{{ longhorn_multipathd_blacklist_directory }}/{{ longhorn_multipathd_blacklist_file }}"
+    dest: "/{{ longhorn_multipathd_blacklist_directory }}/{{ longhorn_multipathd_blacklist_file }}"
+    mode: "{{ longhorn_multipathd_blacklist_file_perm }}"
+    owner: "root"
+    group: "root"
+  notify:
+    - restart multipathd

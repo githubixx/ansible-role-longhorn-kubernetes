@@ -1,0 +1,39 @@
+
+# Copyright (C) 2023 Robert Wimmer
+# SPDX-License-Identifier: GPL-3.0-or-later
+
+#
+# For all possible values see:
+# https://github.com/longhorn/longhorn/blob/v1.4.0/chart/values.yaml
+#
+
+persistence:
+  defaultClass: true
+  defaultFsType: ext4
+  defaultMkfsParams: "-m 1"
+  defaultClassReplicaCount: 3
+  defaultDataLocality: best-effort
+
+defaultSettings:
+  createDefaultDiskLabeledNodes: false
+  defaultDataPath: /var/lib/longhorn
+  defaultDataLocality: best-effort
+  # This setting should be set to false in production environment
+  # to ensure the best availability of the volume. Otherwise, one
+  # node down event may bring down more than one replicas of a volume.
+  replicaSoftAntiAffinity: false
+  defaultReplicaCount: 3
+  mkfsExt4Parameters: "-m 1"
+  # This setting should be set to false in production environment
+  # to ensure every volume have the best availability when created.
+  # Because with the setting set to true, the volume creation won’t
+  # error out even there is only enough room to schedule one replica.
+  # So there is a risk that the cluster is running out of the spaces
+  # but the user won’t be made aware immediately.
+  allowVolumeCreationWithDegradedAvailability: false
+  storageOverProvisioningPercentage: 100
+  deletingConfirmationFlag: false
+
+longhornManager:
+  log:
+    format: json

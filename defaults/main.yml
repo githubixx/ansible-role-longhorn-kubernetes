@@ -1,0 +1,52 @@
+---
+# Copyright (C) 2023 Robert Wimmer
+# SPDX-License-Identifier: GPL-3.0-or-later
+
+# Helm chart version
+longhorn_chart_version: "1.4.0"
+
+# Helm release name
+longhorn_release_name: "longhorn"
+
+# Helm repository name
+longhorn_repo_name: "longhorn"
+
+# Helm chart name
+longhorn_chart_name: "{{ longhorn_repo_name }}/{{ longhorn_release_name }}"
+
+# Helm chart URL
+longhorn_chart_url: "https://charts.longhorn.io"
+
+# Kubernetes namespace where Longhorn resources should be installed
+longhorn_namespace: "longhorn-system"
+
+# By default all tasks that needs to communicate with the Kubernetes
+# cluster are executed on your local host (127.0.0.1). But if that one
+# doesn't have direct connection to this cluster or should be executed
+# elsewhere this variable can be changed accordingly.
+longhorn_delegate_to: "127.0.0.1"
+
+# Shows the "helm" command that was executed if a task uses Helm to
+# install, update/upgrade or deletes such a resource.
+longhorn_helm_show_commands: false
+
+# Without "longhorn_action" variable defined this role will only render a file
+# with all the resources that will be installed or upgraded. The rendered
+# file with the resources will be called "template.yml" and will be
+# placed in the directory specified below. The default will create a directory
+# "longhorn/template" in users "$HOME" directory.
+longhorn_template_output_directory: "{{ '~/longhorn/template' | expanduser }}"
+
+# The Ansible group name of the nodes where Longhorn will store data
+# or replicas of the data. As the role needs to install a few OS packages
+# on that nodes the role needs to know on which hosts the tools/packages
+# are needed. E.g. if Longhorn should only be installed on nodes with a
+# specific label or taint then only these nodes need the packages installed.
+longhorn_nodes: "k8s_longhorn"
+
+# Enable multipathd blacklist. For more information see:
+# https://longhorn.io/kb/troubleshooting-volume-with-multipath/
+# longhorn_multipathd_blacklist_directory: "/etc/multipath/conf.d"
+# longhorn_multipathd_blacklist_directory_perm: "0755"
+# longhorn_multipathd_blacklist_file: "10-longhorn.conf"
+# longhorn_multipathd_blacklist_file_perm: "0644"

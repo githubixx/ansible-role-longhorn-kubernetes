@@ -1,0 +1,14 @@
+---
+# Copyright (C) 2023 Robert Wimmer
+# SPDX-License-Identifier: GPL-3.0-or-later
+
+- name: Restart multipathd
+  ansible.builtin.service:
+    name: "multipathd"
+    state: "{{ item }}"
+  loop:
+    - stopped
+    - started
+  listen: "restart multipathd"
+  tags:
+    - skip_ansible_lint
