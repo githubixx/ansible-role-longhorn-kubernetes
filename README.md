@@ -33,6 +33,11 @@ Additional remarks
 
 By default Longhorn uses the path `/var/lib/longhorn` on the K8s worker nodes to store data or replicas of data. First it's a good idea to just keep that path if possible. The same is true for the default namespace `longhorn-system`. This might save you from some trouble later. Second since Longhorn doesn’t currently support sharding between the different disks, its recommend using LVM to aggregate all the disks for Longhorn into a single partition, so it can be easily extended in the future. This role doesn't manage LVM but you can use my [LVM role](https://github.com/githubixx/ansible-role-lvm) or any other Ansible LVM role or whatever automation tool you want or just configure everything manually. The Molecule test (see below) contains an example LVM setup.
 
+Changelog
+---------
+
+See [CHANGELOG.md](https://github.com/githubixx/ansible-role-longhorn-kubernetes/blob/master/CHANGELOG.md)
+
 Role variables
 --------------
 
