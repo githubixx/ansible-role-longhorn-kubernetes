@@ -1,0 +1,47 @@
+---
+# Copyright (C) 2023 Robert Wimmer
+# SPDX-License-Identifier: GPL-3.0-or-later
+
+- name: Check if Helm command is installed
+  ansible.builtin.shell: hash helm
+  delegate_to: "{{ longhorn_delegate_to }}"
+  run_once: true
+  changed_when: false
+  args:
+    executable: "/bin/bash"
+
+- name: Load required variables based on the OS type
+  ansible.builtin.include_vars: "{{ item }}"
+  with_first_found:
+    - "{{ ansible_distribution | lower }}-{{ ansible_distribution_major_version }}.yml"
+    - "{{ ansible_distribution | lower }}-{{ ansible_distribution_version }}.yml"
+    - "{{ ansible_distribution | lower }}-{{ ansible_distribution_release }}.yml"
+    - "{{ ansible_distribution | lower }}.yml"
+    - "{{ ansible_os_family | lower }}.yml"
+  tags:
+    - always
+
+- name: Execute OS specific tasks
+  when:
+    - groups[longhorn_nodes] is defined
+    - inventory_hostname in groups[longhorn_nodes]
+  ansible.builtin.include_tasks:
+    file: "{{ item }}"
+  with_first_found:
+    - "os/{{ ansible_distribution | lower }}-{{ ansible_distribution_major_version }}.yml"
+    - "os/{{ ansible_distribution | lower }}-{{ ansible_distribution_version }}.yml"
+    - "os/{{ ansible_distribution | lower }}-{{ ansible_distribution_release }}.yml"
+    - "os/{{ ansible_distribution | lower }}.yml"
+    - "os/{{ ansible_os_family | lower }}.yml"
+
+- name: Set default action to only render template via Helm
+  when:
+    - longhorn_action is not defined
+  ansible.builtin.set_fact:
+    longhorn_action: "template"
+  delegate_to: "{{ longhorn_delegate_to }}"
+  run_once: true
+
+- name: Include tasks to execute requested action
+  ansible.builtin.include_tasks:
+    file: "tasks/{{ longhorn_action | lower }}.yml"

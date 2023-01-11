@@ -1,0 +1,62 @@
+---
+# Copyright (C) 2023 Robert Wimmer
+# SPDX-License-Identifier: GPL-3.0-or-later
+
+- name: Upgrade Longhorn via Helm
+  block:
+    - name: Create temporary file for Helm values
+      ansible.builtin.tempfile:
+        state: file
+        suffix: longhorn_values
+      run_once: true
+      delegate_to: "{{ longhorn_delegate_to }}"
+      register: longhorn__values_tmp_file
+
+    - name: Select values file for Helm template
+      ansible.builtin.template:
+        src: "{{ lookup('first_found', params) }}"
+        dest: "{{ longhorn__values_tmp_file.path }}"
+        mode: 0600
+      run_once: true
+      delegate_to: "{{ longhorn_delegate_to }}"
+      vars:
+        params:
+          files:
+            - longhorn_values_user.yml.j2
+            - longhorn_values_default.yml.j2
+          paths:
+            - templates
+
+    - name: Upgrade Helm chart
+      kubernetes.core.helm:
+        name: "{{ longhorn_release_name }}"
+        chart_ref: "{{ longhorn_chart_name }}"
+        chart_version: "{{ longhorn_chart_version }}"
+        release_namespace: "{{ longhorn_namespace }}"
+        create_namespace: false
+        update_repo_cache: true
+        values_files:
+          - "{{ longhorn__values_tmp_file.path }}"
+      run_once: true
+      delegate_to: "{{ longhorn_delegate_to }}"
+      register: longhorn__helm_upgrade_chart
+
+    - name: Upgrade Helm chart (helm command executed)
+      when:
+        - longhorn__helm_upgrade_chart is defined
+        - longhorn__helm_upgrade_chart.command is defined
+        - longhorn_helm_show_commands
+      ansible.builtin.debug:
+        var: longhorn__helm_upgrade_chart.command
+      changed_when: false
+      run_once: true
+      delegate_to: "{{ longhorn_delegate_to }}"
+
+    - name: Delete temporary file for Helm values
+      ansible.builtin.include_tasks:
+        file: includes/delete_helm_values_file.yml
+
+  rescue:
+    - name: Delete temporary file for Helm values
+      ansible.builtin.include_tasks:
+        file: includes/delete_helm_values_file.yml

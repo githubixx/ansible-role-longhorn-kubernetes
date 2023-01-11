@@ -1,0 +1,15 @@
+---
+# Copyright (C) 2023 Robert Wimmer
+# SPDX-License-Identifier: GPL-3.0-or-later
+
+longhorn_required_packages:
+  - "nfs-common"
+  - "open-iscsi"
+  - "bash"
+  - "curl"
+  - "mount"
+  - "grep"
+  - "gawk"
+  - "util-linux"
+  - "jq"
+  - "coreutils"

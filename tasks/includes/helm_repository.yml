@@ -1,0 +1,23 @@
+---
+# Copyright (C) 2023 Robert Wimmer
+# SPDX-License-Identifier: GPL-3.0-or-later
+
+- name: Add Helm repository
+  when:
+    - longhorn__helm_repo_installed.status is not defined
+  kubernetes.core.helm_repository:
+    name: "{{ longhorn_repo_name }}"
+    repo_url: "{{ longhorn_chart_url }}"
+  delegate_to: "{{ longhorn_delegate_to }}"
+  run_once: true
+  register: longhorn__helm_add_repo
+
+- name: Add Helm repository (helm command executed)
+  when:
+    - longhorn__helm_add_repo is defined
+    - longhorn__helm_add_repo.command is defined
+    - longhorn_helm_show_commands
+  ansible.builtin.debug:
+    var: longhorn__helm_add_repo.command
+  delegate_to: "{{ longhorn_delegate_to }}"
+  run_once: true

@@ -1,0 +1,20 @@
+---
+# Copyright (C) 2023 Robert Wimmer
+# SPDX-License-Identifier: GPL-3.0-or-later
+
+galaxy_info:
+  author: Robert Wimmer
+  description: Install Longhorn cloud native distributed block storage for Kubernetes
+  license: GPL-3.0-or-later
+  min_ansible_version: "2.11"
+  namespace: githubixx
+  role_name: longhorn_kubernetes
+  platforms:
+    - name: Ubuntu
+      versions:
+        - "focal"
+  galaxy_tags:
+    - kubernetes
+    - storage
+    - k8s
+    - longhorn

@@ -1,0 +1,11 @@
+---
+# Copyright (C) 2023 Robert Wimmer
+# SPDX-License-Identifier: GPL-3.0-or-later
+
+- name: Delete temporary file for Helm values
+  when: longhorn__values_tmp_file.path is defined
+  ansible.builtin.file:
+    path: "{{ longhorn__values_tmp_file.path }}"
+    state: absent
+  run_once: true
+  delegate_to: "{{ longhorn_delegate_to }}"

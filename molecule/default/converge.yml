@@ -1,0 +1,24 @@
+---
+# Copyright (C) 2023 Robert Wimmer
+# SPDX-License-Identifier: GPL-3.0-or-later
+
+- name: Setup Longhorn
+  hosts: all
+  tasks:
+    - name: Include Longhorn role
+      ansible.builtin.include_role:
+        name: githubixx.longhorn_kubernetes
+      vars:
+        #
+        # Install
+        #longhorn_action: "install"
+        #
+        # Upgrade
+        #longhorn_action: "upgrade"
+        #
+        # Render Helm chart only
+        #longhorn_action: "template"
+        #
+        # Delete all resources
+        #longhorn_action: "delete"
+        #longhorn_delete: "true"

@@ -1,0 +1,72 @@
+---
+# Copyright (C) 2023 Robert Wimmer
+# SPDX-License-Identifier: GPL-3.0-or-later
+
+- name: Confirm Longhorn deletion
+  block:
+    - name: Check if longhorn_delete is set to true
+      failed_when:
+        - longhorn_delete is not defined
+      ansible.builtin.set_fact:
+        longhorn__force_delete: true
+      delegate_to: "{{ longhorn_delegate_to }}"
+      run_once: true
+
+  rescue:
+    - name: Set longhorn__force_delete to false
+      ansible.builtin.set_fact:
+        longhorn__force_delete: false
+      delegate_to: "{{ longhorn_delegate_to }}"
+      run_once: true
+
+- name: Stop Longhorn deletion if longhorn_delete is not set correctly
+  when:
+    - not longhorn__force_delete
+  ansible.builtin.fail:
+    msg: "The variable longhorn_delete was not set to true! Longhorn will not be deleted!"
+  delegate_to: "{{ longhorn_delegate_to }}"
+  run_once: true
+
+- name: Delete Longhorn resources
+  when:
+    - longhorn__force_delete
+  block:
+    - name: Patch deleting-confirmation-flag
+      kubernetes.core.k8s:
+        state: "patched"
+        kind: "setting"
+        name: "deleting-confirmation-flag"
+        namespace: "{{ longhorn_namespace }}"
+        definition:
+          apiVersion: "longhorn.io/v1beta2"
+          value: "true"
+      delegate_to: "{{ longhorn_delegate_to }}"
+      run_once: true
+
+    - name: Uninstall release via Helm
+      kubernetes.core.helm:
+        name: "{{ longhorn_release_name }}"
+        release_namespace: "{{ longhorn_namespace }}"
+        state: "absent"
+      run_once: true
+      delegate_to: "{{ longhorn_delegate_to }}"
+      register: longhorn__helm_show_uninstall_release
+
+    - name: Uninstall release via Helm (helm command executed)
+      when:
+        - longhorn__helm_show_uninstall_release is defined
+        - longhorn__helm_show_uninstall_release.command is defined
+        - longhorn_helm_show_commands
+      ansible.builtin.debug:
+        var: longhorn__helm_show_uninstall_release.command
+      delegate_to: "{{ longhorn_delegate_to }}"
+      run_once: true
+
+    - name: Delete namespace used by Longhorn
+      kubernetes.core.k8s:
+        name: "{{ longhorn_namespace }}"
+        api_version: "v1"
+        kind: "Namespace"
+        state: "absent"
+      delegate_to: "{{ longhorn_delegate_to }}"
+      run_once: true
