@@ -164,7 +164,7 @@
       ansible.builtin.include_role:
         name: githubixx.cilium_kubernetes
       vars:
-        action: "install"
+        cilium_action: "install"
 
 - name: Taint Kubernetes control plane nodes
   hosts: k8s_assets
