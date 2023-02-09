@@ -7,23 +7,39 @@
 # https://github.com/longhorn/longhorn/blob/v1.4.0/chart/values.yaml
 #
 
-persistence:
-  defaultClass: true
-  defaultFsType: ext4
-  defaultMkfsParams: "-m 1"
-  defaultClassReplicaCount: 3
+# These default settings is only for a Longhorn system that hasn’t been
+# deployed. It has no impact on an existing Longhorn system. Changing
+# settings for a running Longhorn deployment should only be done in
+# "Settings" via the "Longhorn UI".
+defaultSettings:
+  # If no other disks exist, create the default disk automatically,
+  # only on nodes with the Kubernetes label
+  # "node.longhorn.io/create-default-disk=true"
+  # If disabled, the default disk will be created on all new nodes
+  # when the node is detected for the first time.
+  createDefaultDiskLabeledNodes: false
+
+  # Default path to use for storing data on a host.
+  defaultDataPath: /var/lib/longhorn
+
+  # See above.
   defaultDataLocality: best-effort
 
-defaultSettings:
-  createDefaultDiskLabeledNodes: false
-  defaultDataPath: /var/lib/longhorn
-  defaultDataLocality: best-effort
   # This setting should be set to false in production environment
   # to ensure the best availability of the volume. Otherwise, one
   # node down event may bring down more than one replicas of a volume.
   replicaSoftAntiAffinity: false
+
+  # The default number of replicas when a volume is created from the
+  # "Longhorn UI". For Kubernetes configuration, update the
+  # "numberOfReplicas" in the "StorageClass".
   defaultReplicaCount: 3
-  mkfsExt4Parameters: "-m 1"
+
+  # Specify the percentage of the file system blocks reserved for the
+  # super-user. The default percentage is 5% but 2% should be good
+  # enough to not waste too much disk space.
+  mkfsExt4Parameters: "-m 2"
+
   # This setting should be set to false in production environment
   # to ensure every volume have the best availability when created.
   # Because with the setting set to true, the volume creation won’t
@@ -31,9 +47,122 @@ defaultSettings:
   # So there is a risk that the cluster is running out of the spaces
   # but the user won’t be made aware immediately.
   allowVolumeCreationWithDegradedAvailability: false
+
+  # The over-provisioning percentage defines how much storage can
+  # be allocated relative to the hard drive's capacity.
   storageOverProvisioningPercentage: 100
+
+  # If the "defaultDataPath" is located on the "root" disk set this
+  # value to 25 (in percent). Otherwise "kubelet" might decide to
+  # mark a Kubernetes node as unscheduable. By default this happens
+  # if disk is 80% full. If "defaultDataPath" is on a separate disk
+  # (which makes very much sense) 10 percent are fine.
+  storageMinimalAvailablePercentage: 10
+
+  # Enable this setting automatically rebalances replicas when
+  # discovered an available node.
+  # The available global options are:
+  # - disabled:     This is the default option. No replica auto-balance
+  #                 will be done.
+  # - least-effort: This option instructs Longhorn to balance replicas
+  #                 for minimal redundancy.
+  # - best-effort:  This option instructs Longhorn to balance replicas
+  #                 for even redundancy.
+  replicaAutoBalance: best-effort
+
+  # This flag is designed to prevent Longhorn from being accidentally
+  # uninstalled which will lead to data lost. Set this flag to "true"
+  # to allow Longhorn uninstallation. If this flag "false", Longhorn
+  # uninstallation job will fail.
   deletingConfirmationFlag: false
+
+  # Restrict Longhorn "system managed" components like
+  #
+  # - instance manager
+  # - engine image
+  # - CSI driver
+  #
+  # to a particular set of nodes by specifying a set of
+  # labels that must be matched.
+  # Please also read the "IMPORTANT NOTE" note below.
+  # Same applies to this node selector.
+{% if longhorn_node_selector_system is defined %}
+  systemManagedComponentsNodeSelector:
+{%  for key in longhorn_node_selector_system.keys() %}
+    {{ key }}: "{{ longhorn_node_selector_system[key] }}"
+{%  endfor %}
+{% endif %}
+
+#
+# IMPORTANT note about "nodeSelector" for various Longhorn user
+# components (see below):
+#
+# If you want to restrict Longhorn user components to only run on
+# particular set of nodes, you can set node selector for all
+# Longhorn components. Longhorn contains user deployed
+# components (e.g, Longhorn manager, Longhorn driver, Longhorn UI)
+# and system managed components (e.g, instance manager,
+# engine image, CSI driver, etc.) You must follow the below order
+# when set the node selector:
+#
+# - Set node selector for Longhorn "user components" below
+# - Set node selector for Longhorn "system components" via
+#   default variable "systemManagedComponentsNodeSelector" (see
+#   above).
+#
+# It's recommended to set the node selector during Longhorn deployment
+# because the Longhorn system cannot be operated during the update!
+# So if you change the "nodeSelector" for the system managed
+# components via Longhorn UI as mentioned above you MUST DETACH
+# ALL VOLUMES first! That's no fun ;-) So set this once and never
+# touch again :D
 
 longhornManager:
   log:
     format: json
+{% if longhorn_node_selector_user is defined %}
+  nodeSelector:
+{%  for key in longhorn_node_selector_user.keys() %}
+    {{ key }}: "{{ longhorn_node_selector_user[key] }}"
+{%  endfor %}
+{% endif %}
+
+longhornDriver:
+{% if longhorn_node_selector_user is defined %}
+  nodeSelector:
+{%  for key in longhorn_node_selector_user.keys() %}
+    {{ key }}: "{{ longhorn_node_selector_user[key] }}"
+{%  endfor %}
+{% endif %}
+
+longhornUI:
+{% if longhorn_node_selector_user is defined %}
+  nodeSelector:
+{%  for key in longhorn_node_selector_user.keys() %}
+    {{ key }}: "{{ longhorn_node_selector_user[key] }}"
+{%  endfor %}
+{% endif %}
+
+longhornConversionWebhook:
+{% if longhorn_node_selector_user is defined %}
+  nodeSelector:
+{%  for key in longhorn_node_selector_user.keys() %}
+    {{ key }}: "{{ longhorn_node_selector_user[key] }}"
+{%  endfor %}
+{% endif %}
+
+longhornAdmissionWebhook:
+{% if longhorn_node_selector_user is defined %}
+  nodeSelector:
+{%  for key in longhorn_node_selector_user.keys() %}
+    {{ key }}: "{{ longhorn_node_selector_user[key] }}"
+{%  endfor %}
+{% endif %}
+
+longhornRecoveryBackend:
+{% if longhorn_node_selector_user is defined %}
+  nodeSelector:
+{%  for key in longhorn_node_selector_user.keys() %}
+    {{ key }}: "{{ longhorn_node_selector_user[key] }}"
+{%  endfor %}
+{% endif %}
