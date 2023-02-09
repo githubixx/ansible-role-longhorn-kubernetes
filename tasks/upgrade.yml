@@ -2,6 +2,18 @@
 # Copyright (C) 2023 Robert Wimmer
 # SPDX-License-Identifier: GPL-3.0-or-later
 
+- name: Include label_nodes_user.yml
+  ansible.builtin.include_tasks:
+    file: includes/label_nodes_user.yml
+  vars:
+    longhorn__label_state: "replace"
+
+- name: Include label_nodes_system.yml
+  ansible.builtin.include_tasks:
+    file: includes/label_nodes_system.yml
+  vars:
+    longhorn__label_state: "replace"
+
 - name: Upgrade Longhorn via Helm
   block:
     - name: Create temporary file for Helm values

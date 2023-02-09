@@ -70,3 +70,15 @@
         state: "absent"
       delegate_to: "{{ longhorn_delegate_to }}"
       run_once: true
+
+    - name: Include nodes_label_user.yml
+      ansible.builtin.include_tasks:
+        file: includes/nodes_label_user.yml
+      vars:
+        longhorn__label_state: "remove"
+ 
+    - name: Include nodes_label_system.yml
+      ansible.builtin.include_tasks:
+        file: includes/nodes_label_system.yml
+      vars:
+        longhorn__label_state: "remove"
