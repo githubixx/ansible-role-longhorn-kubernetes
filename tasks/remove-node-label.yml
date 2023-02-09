@@ -1,0 +1,15 @@
+---
+# Copyright (C) 2023 Robert Wimmer
+# SPDX-License-Identifier: GPL-3.0-or-later
+
+- name: Include nodes_label_user.yml
+  ansible.builtin.include_tasks:
+    file: includes/nodes_label_user.yml
+  vars:
+    longhorn__label_state: "remove"
+
+- name: Include nodes_label_system.yml
+  ansible.builtin.include_tasks:
+    file: includes/nodes_label_system.yml
+  vars:
+    longhorn__label_state: "remove"

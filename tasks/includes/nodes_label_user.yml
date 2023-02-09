@@ -1,0 +1,20 @@
+---
+# Copyright (C) 2023 Robert Wimmer
+# SPDX-License-Identifier: GPL-3.0-or-later
+
+- name: Handle K8s node labels for user managed Longhorn components
+  when:
+    - longhorn_label_nodes
+    - longhorn_node_selector_user is defined
+  kubernetes.core.k8s_json_patch:
+    api_version: "v1"
+    kind: "Node"
+    name: "{{ k8s_longhorn_node }}"
+    patch: "{{ lookup('template', 'label_user.yml.j2') | from_yaml }}"
+  loop: "{{ groups[longhorn_nodes_user] }}"
+  loop_control:
+    loop_var: k8s_longhorn_node
+  run_once: true
+  delegate_to: "{{ longhorn_delegate_to }}"
+  tags:
+    - skip_ansible_lint

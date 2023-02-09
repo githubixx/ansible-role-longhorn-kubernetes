@@ -21,10 +21,17 @@
   tags:
     - always
 
-- name: Execute OS specific tasks
+- name: Set default action to only render template via Helm
   when:
-    - groups[longhorn_nodes] is defined
-    - inventory_hostname in groups[longhorn_nodes]
+    - longhorn_action is not defined
+  ansible.builtin.set_fact:
+    longhorn_action: "template"
+  delegate_to: "{{ longhorn_delegate_to }}"
+  run_once: true
+
+- name: Execute OS specific tasks
+  when: (longhorn_action != "delete") and
+        (inventory_hostname in groups[longhorn_nodes_system] or inventory_hostname in groups[longhorn_nodes_user])
   ansible.builtin.include_tasks:
     file: "{{ item }}"
   with_first_found:
@@ -33,14 +40,6 @@
     - "os/{{ ansible_distribution | lower }}-{{ ansible_distribution_release }}.yml"
     - "os/{{ ansible_distribution | lower }}.yml"
     - "os/{{ ansible_os_family | lower }}.yml"
-
-- name: Set default action to only render template via Helm
-  when:
-    - longhorn_action is not defined
-  ansible.builtin.set_fact:
-    longhorn_action: "template"
-  delegate_to: "{{ longhorn_delegate_to }}"
-  run_once: true
 
 - name: Include tasks to execute requested action
   ansible.builtin.include_tasks:
