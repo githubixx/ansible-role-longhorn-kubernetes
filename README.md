@@ -77,15 +77,93 @@ longhorn_helm_show_commands: false
 # "longhorn/template" in users "$HOME" directory.
 longhorn_template_output_directory: "{{ '~/longhorn/template' | expanduser }}"
 
-# The Ansible group name of the nodes where Longhorn will store data
-# or replicas of the data. As the role needs to install a few OS packages
-# on that nodes the role needs to know on which hosts the tools/packages
-# are needed. E.g. if Longhorn should only be installed on nodes with a
-# specific label or taint then only these nodes need the packages installed.
-longhorn_nodes: "k8s_longhorn"
+# The Ansible group name of the nodes where the Longhorn "user components"
+# should run. That's mainly the following components:
+#
+# - Manager
+# - Driver
+# - UI
+# - ConversionWebhook
+# - AdmissionWebhook
+# - RecoveryBackend
+#
+# As the role needs to install a few OS packages on that node, the role
+# needs to know on which hosts the tools/packages should be installed.
+#
+# If Longhorn "system" and "user" components should run on the same nodes
+# just put the same group members into "longhorn_nodes_user" and
+# "longhorn_nodes_system" group.
+#
+# This group is also used if you want the role to put a label on the
+# group members and/or if a node selector should be used (see below)
+# to schedule "user components" only on a specific set of K8s nodes.
+longhorn_nodes_user: "k8s_longhorn_user"
+
+# Basically same as above but for "system components". That's basically:
+#
+# - Instance Manager
+# - Engine Image
+# - CSI Driver
+#
+# This group is also used if you want the role to put a label on the
+# group members and/or if a node selector should be used (see below)
+# to schedule "user components" only on a specific set of K8s nodes.
+longhorn_nodes_system: "k8s_longhorn_system"
+
+# Set this to "true" if the Kubernetes nodes defined in the host groups
+# specified in "longhorn_nodes_(user|system)" should be labeled. This is
+# useful if the Longhorn pods should run only on a specific set of K8s
+# hosts. If set to "true" then also "longhorn_node_selector_(user|system)"
+# must be specified (see below). The node selector keys and values
+# specified there will also be used for the node labels. You can also
+# set the labels outside this role of course. In this case leave this
+# value to "false" and only set "longhorn_node_selector_(user|system)".
+longhorn_label_nodes: false
+
+# If the Longhorn pods should only run on a specific set of nodes with
+# specific labels then these labels can be specified here. The keys and
+# values defined here are also used to label the nodes in "longhorn_nodes_user"
+# group if "longhorn_label_nodes" is set to "true". So make sure that
+# the labels are either set somewhere else outside this role or enable
+# "longhorn_label_nodes" variable.
+#
+# This/these node selector(s) will be used for the followning Longhorn
+# "user components":
+#
+# - Manager
+# - Driver
+# - UI
+# - ConversionWebhook
+# - AdmissionWebhook
+# - RecoveryBackend
+#
+# WARNING: Since all Longhorn components will be restarted, the Longhorn
+# system is unavailable temporarily. Make sure all Longhorn volumes are
+# detached! If there are running Longhorn volumes in the system, this
+# means the Longhorn system cannot restart its components and the
+# request will be rejected. Don’t operate the Longhorn system while
+# node selector settings are updated and Longhorn components are being
+# restarted. So it makes very much sense to settle on how the Longhorn
+# components should be distributed BEFORE deployment of Longhorn. Changing
+# it afterwards is no fun...
+#
+# Remove the comment (#) in-front of the next two lines to enable the
+# setting.
+# longhorn_node_selector_user:
+#   longhorn-system-components: "true"
+
+# Basically same as above but for "system components". That's basically:
+#
+# - Instance Manager
+# - Engine Image
+# - CSI Driver
+#
+# longhorn_node_selector_system:
+#   longhorn-user-components: "true"
 
 # Enable multipathd blacklist. For more information see:
 # https://longhorn.io/kb/troubleshooting-volume-with-multipath/
+# In general it makes normally sense to have these settings enabled.
 # longhorn_multipathd_blacklist_directory: "/etc/multipath/conf.d"
 # longhorn_multipathd_blacklist_directory_perm: "0755"
 # longhorn_multipathd_blacklist_file: "10-longhorn.conf"
@@ -152,6 +230,22 @@ ansible-playbook \
 ```
 
 Longhorn has a [Deleting Confirmation Flag](https://longhorn.io/docs/1.4.0/references/settings/#deleting-confirmation-flag) which is set to `false` by default. In this case Longhorn refuses to be uninstalled. By setting `--extra-vars longhorn_delete=true` the Ansible role will set this flag to `true` and afterwards the Longhorn resources can be deleted by the role. Without `longhorn_delete` variable the role will refuse to finish uninstallation.
+
+The role also allows to set Kubernetes node labels. First `longhorn_label_nodes: true` must be set. Next the nodes that should be labeled must be assigned to two Ansible groups. By default all nodes that should run Longhorn system components are part of a group called `k8s_longhorn_system`. This can be changed by setting `longhorn_nodes_system` to a different value. For the Longhorn user components the group is called `k8s_longhorn_user`. This can also be changed by adjusting `longhorn_nodes_user` variable value. Finally you need to decide how the labels should be called. This can be done by setting `longhorn_node_selector_system` and `longhorn_node_selector_user` accordingly. All the variables are described in detail above in the variable section.
+
+**Important note**: As mentioned in the variable comments above setting these labels can have severe consequences if Longhorn volumes already exists! In this case make sure that you detach all existing volumes!
+
+To set the Kubernetes node labels run:
+
+```bash
+ansible-playbook --tags=role-longhorn-kubernetes --extra-vars longhorn_action=add-node-label k8s.yml
+```
+
+ To remove the Kubernetes node labels run:
+
+```bash
+ansible-playbook --tags=role-longhorn-kubernetes --extra-vars longhorn_action=remove-node-label k8s.yml
+```
 
 Example Playbook
 ----------------
