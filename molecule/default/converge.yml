@@ -11,14 +11,14 @@
       vars:
         #
         # Install
-        #longhorn_action: "install"
+        # longhorn_action: "install"
         #
         # Upgrade
-        #longhorn_action: "upgrade"
+        # longhorn_action: "upgrade"
         #
         # Render Helm chart only
-        #longhorn_action: "template"
+        longhorn_action: "template"
         #
         # Delete all resources
-        #longhorn_action: "delete"
-        #longhorn_delete: "true"
+        # longhorn_action: "delete"
+        # longhorn_delete: "true"
