@@ -80,7 +80,8 @@ platforms:
       - vpn
       - lvm
       - k8s_worker
-      - k8s_longhorn
+      - k8s_longhorn_system
+      - k8s_longhorn_user
       - k8s
     interfaces:
       - auto_config: true
@@ -97,7 +98,7 @@ platforms:
       - vpn
       - lvm
       - k8s_worker
-      - k8s_longhorn
+      - k8s_longhorn_user
       - k8s
     interfaces:
       - auto_config: true
@@ -114,7 +115,8 @@ platforms:
       - vpn
       - lvm
       - k8s_worker
-      - k8s_longhorn
+      - k8s_longhorn_user
+      - k8s_longhorn_system
       - k8s
     interfaces:
       - auto_config: true
@@ -131,7 +133,7 @@ platforms:
       - vpn
       - lvm
       - k8s_worker
-      - k8s_longhorn
+      - k8s_longhorn_system
       - k8s
     interfaces:
       - auto_config: true
