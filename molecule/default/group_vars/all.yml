@@ -151,7 +151,6 @@ cilium_etcd_interface: "{{ k8s_interface }}"
 
 longhorn_delegate_to: "test-longhorn-assets"
 longhorn_helm_show_commands: true
-longhorn_nodes: "k8s_longhorn"
 longhorn_multipathd_blacklist_directory: "/etc/multipath/conf.d"
 longhorn_multipathd_blacklist_directory_perm: "0755"
 longhorn_multipathd_blacklist_file: "10-longhorn.conf"
