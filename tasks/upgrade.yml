@@ -2,15 +2,15 @@
 # Copyright (C) 2023 Robert Wimmer
 # SPDX-License-Identifier: GPL-3.0-or-later
 
-- name: Include label_nodes_user.yml
+- name: Include nodes_label_user.yml
   ansible.builtin.include_tasks:
-    file: includes/label_nodes_user.yml
+    file: includes/nodes_label_user.yml
   vars:
     longhorn__label_state: "replace"
 
-- name: Include label_nodes_system.yml
+- name: Include nodes_label_system.yml
   ansible.builtin.include_tasks:
-    file: includes/label_nodes_system.yml
+    file: includes/nodes_label_system.yml
   vars:
     longhorn__label_state: "replace"
 
