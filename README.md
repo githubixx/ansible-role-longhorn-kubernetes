@@ -81,7 +81,7 @@ longhorn_template_output_directory: "{{ '~/longhorn/template' | expanduser }}"
 # should run. That's mainly the following components:
 #
 # - Manager
-# - Driver
+# - Driver Deployer
 # - UI
 # - ConversionWebhook
 # - AdmissionWebhook
@@ -127,11 +127,17 @@ longhorn_label_nodes: false
 # the labels are either set somewhere else outside this role or enable
 # "longhorn_label_nodes" variable.
 #
+# For more information what possible consequences it has to run Longhorn
+# components only on specific Kubernetes nodes please also read an
+# entry in the Longhorn knowledge base:
+# Tip: Set Longhorn To Only Use Storage On A Specific Set Of Nodes
+# https://longhorn.io/kb/tip-only-use-storage-on-a-set-of-nodes/
+#
 # This/these node selector(s) will be used for the followning Longhorn
 # "user components":
 #
 # - Manager
-# - Driver
+# - Driver Deployer
 # - UI
 # - ConversionWebhook
 # - AdmissionWebhook
@@ -148,9 +154,11 @@ longhorn_label_nodes: false
 # it afterwards is no fun...
 #
 # Remove the comment (#) in-front of the next two lines to enable the
-# setting.
+# setting. The label key "longhorn.components" and its value
+# "user" are just examples. You can use whatever valid label key name and
+# key value you want of course.
 # longhorn_node_selector_user:
-#   longhorn-system-components: "true"
+#   longhorn.components: user
 
 # Basically same as above but for "system components". That's basically:
 #
@@ -159,7 +167,7 @@ longhorn_label_nodes: false
 # - CSI Driver
 #
 # longhorn_node_selector_system:
-#   longhorn-user-components: "true"
+#   longhorn.components: system
 
 # Enable multipathd blacklist. For more information see:
 # https://longhorn.io/kb/troubleshooting-volume-with-multipath/
