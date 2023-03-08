@@ -1,0 +1,5 @@
+{% for key in longhorn_node_selector_user.keys() %}
+- op: "{{ longhorn__label_state }}"
+  path: "/metadata/labels/{{ key }}"
+  value: "{{ longhorn_node_selector_user[key] }}" 
+{% endfor %}

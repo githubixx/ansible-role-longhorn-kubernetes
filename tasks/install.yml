@@ -15,6 +15,18 @@
   ansible.builtin.include_tasks:
     file: includes/helm_repository.yml
 
+- name: Include nodes_label_user.yml
+  ansible.builtin.include_tasks:
+    file: includes/nodes_label_user.yml
+  vars:
+    longhorn__label_state: "replace"
+
+- name: Include nodes_label_system.yml
+  ansible.builtin.include_tasks:
+    file: includes/nodes_label_system.yml
+  vars:
+    longhorn__label_state: "replace"
+
 - name: Install Longhorn via Helm
   block:
     - name: Create temporary file for Helm values

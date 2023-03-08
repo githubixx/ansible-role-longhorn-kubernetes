@@ -150,12 +150,16 @@ cilium_helm_show_commands: true
 cilium_etcd_interface: "{{ k8s_interface }}"
 
 longhorn_delegate_to: "test-longhorn-assets"
-longhorn_helm_show_commands: false
-longhorn_nodes: "k8s_longhorn"
+longhorn_helm_show_commands: true
 longhorn_multipathd_blacklist_directory: "/etc/multipath/conf.d"
 longhorn_multipathd_blacklist_directory_perm: "0755"
 longhorn_multipathd_blacklist_file: "10-longhorn.conf"
 longhorn_multipathd_blacklist_file_perm: "0644"
+longhorn_label_nodes: true
+longhorn_node_selector_user:
+  longhorn.components: user
+longhorn_node_selector_system:
+  longhorn.components: system
 
 lvm_vgs:
   - vgname: vg01
