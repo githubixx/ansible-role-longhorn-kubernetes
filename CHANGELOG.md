@@ -5,6 +5,10 @@ SPDX-License-Identifier: GPL-3.0-or-later
 
 # Changelog
 
+## 0.2.1+1.4.1
+
+- update Longhorn to `v1.4.1`
+
 ## 0.2.0+1.4.0
 
 - **BREAKING**: `longhorn_nodes` variable was replaced by `longhorn_nodes_user` and `longhorn_nodes_system` variables.
