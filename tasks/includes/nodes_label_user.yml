@@ -2,6 +2,22 @@
 # Copyright (C) 2023 Robert Wimmer
 # SPDX-License-Identifier: GPL-3.0-or-later
 
+- name: Create list of hosts
+  when:
+    - longhorn_label_nodes
+    - longhorn_node_selector_user is defined
+  ansible.builtin.set_fact:
+    longhorn__hostnames_user: |-
+      [
+      {% for host in groups[longhorn_nodes_user] %}
+        {
+          "hostname": "{{ host.split('.')[0] }}",
+        },
+      {% endfor %}
+      ]
+  run_once: true
+  delegate_to: "{{ longhorn_delegate_to }}"
+
 - name: Handle K8s node labels for user managed Longhorn components
   when:
     - longhorn_label_nodes
@@ -9,9 +25,9 @@
   kubernetes.core.k8s_json_patch:
     api_version: "v1"
     kind: "Node"
-    name: "{{ k8s_longhorn_node }}"
+    name: "{{ k8s_longhorn_node.hostname }}"
     patch: "{{ lookup('template', 'label_user.yml.j2') | from_yaml }}"
-  loop: "{{ groups[longhorn_nodes_user] }}"
+  loop: "{{ longhorn__hostnames_user }}"
   loop_control:
     loop_var: k8s_longhorn_node
   run_once: true
