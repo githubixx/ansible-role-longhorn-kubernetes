@@ -114,11 +114,11 @@ longhorn_label_nodes: false
 # it afterwards is no fun...
 #
 # Remove the comment (#) in-front of the next two lines to enable the
-# setting. The label key "longhorn.components" and its value
-# "user" are just examples. You can use whatever valid label key name and
+# setting. The label key "longhorn.user.components" and its value
+# "yes" are just examples. You can use whatever valid label key name and
 # key value you want of course.
 # longhorn_node_selector_user:
-#   longhorn.components: user
+#   longhorn.user.components: "yes"
 
 # Basically same as above but for "system components". That's basically:
 #
@@ -127,7 +127,7 @@ longhorn_label_nodes: false
 # - CSI Driver
 #
 # longhorn_node_selector_system:
-#   longhorn.components: system
+#   longhorn.system.components: "yes"
 
 # Enable multipathd blacklist. For more information see:
 # https://longhorn.io/kb/troubleshooting-volume-with-multipath/
