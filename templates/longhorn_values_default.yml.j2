@@ -8,7 +8,7 @@
 #
 
 csi:
-  kubeletRootDir: /var/lib/kubelet
+  kubeletRootDir: "/var/lib/kubelet"
 
 # These default settings is only for a Longhorn system that hasn’t been
 # deployed. It has no impact on an existing Longhorn system. Changing
@@ -20,23 +20,23 @@ defaultSettings:
   # "node.longhorn.io/create-default-disk=true"
   # If disabled, the default disk will be created on all new nodes
   # when the node is detected for the first time.
-  createDefaultDiskLabeledNodes: false
+  createDefaultDiskLabeledNodes: "false"
 
   # Default path to use for storing data on a host.
-  defaultDataPath: /var/lib/longhorn
+  defaultDataPath: "/var/lib/longhorn"
 
   # See above.
-  defaultDataLocality: best-effort
+  defaultDataLocality: "best-effort"
 
   # This setting should be set to false in production environment
   # to ensure the best availability of the volume. Otherwise, one
   # node down event may bring down more than one replicas of a volume.
-  replicaSoftAntiAffinity: false
+  replicaSoftAntiAffinity: "false"
 
   # The default number of replicas when a volume is created from the
   # "Longhorn UI". For Kubernetes configuration, update the
   # "numberOfReplicas" in the "StorageClass".
-  defaultReplicaCount: 3
+  defaultReplicaCount: "3"
 
   # Specify the percentage of the file system blocks reserved for the
   # super-user. The default percentage is 5% but 2% should be good
@@ -49,18 +49,18 @@ defaultSettings:
   # error out even there is only enough room to schedule one replica.
   # So there is a risk that the cluster is running out of the spaces
   # but the user won’t be made aware immediately.
-  allowVolumeCreationWithDegradedAvailability: false
+  allowVolumeCreationWithDegradedAvailability: "false"
 
   # The over-provisioning percentage defines how much storage can
   # be allocated relative to the hard drive's capacity.
-  storageOverProvisioningPercentage: 100
+  storageOverProvisioningPercentage: "100"
 
   # If the "defaultDataPath" is located on the "root" disk set this
   # value to 25 (in percent). Otherwise "kubelet" might decide to
   # mark a Kubernetes node as unscheduable. By default this happens
   # if disk is 80% full. If "defaultDataPath" is on a separate disk
   # (which makes very much sense) 10 percent are fine.
-  storageMinimalAvailablePercentage: 10
+  storageMinimalAvailablePercentage: "10"
 
   # Enable this setting automatically rebalances replicas when
   # discovered an available node.
@@ -71,13 +71,13 @@ defaultSettings:
   #                 for minimal redundancy.
   # - best-effort:  This option instructs Longhorn to balance replicas
   #                 for even redundancy.
-  replicaAutoBalance: best-effort
+  replicaAutoBalance: "best-effort"
 
   # This flag is designed to prevent Longhorn from being accidentally
   # uninstalled which will lead to data lost. Set this flag to "true"
   # to allow Longhorn uninstallation. If this flag "false", Longhorn
   # uninstallation job will fail.
-  deletingConfirmationFlag: false
+  deletingConfirmationFlag: "false"
 
   # Restrict Longhorn "system managed" components like
   #
@@ -90,7 +90,7 @@ defaultSettings:
   # Please also read the "IMPORTANT NOTE" note below.
   # Same applies to this node selector.
 {% if longhorn_node_selector_system is defined %}
-  systemManagedComponentsNodeSelector: "{%  for key in longhorn_node_selector_system.keys() %}{{ key }}: {{ longhorn_node_selector_system[key] }}{% if not loop.last %},{% endif %}{%  endfor %}"
+  systemManagedComponentsNodeSelector: "{%  for key in longhorn_node_selector_system.keys() %}{{ key }}:{{ longhorn_node_selector_system[key] }}{% if not loop.last %},{% endif %}{%  endfor %}"
 {% endif %}
 
 #
@@ -119,7 +119,7 @@ defaultSettings:
 
 longhornManager:
   log:
-    format: json
+    format: "json"
 {% if longhorn_node_selector_user is defined %}
   nodeSelector:
 {%  for key in longhorn_node_selector_user.keys() %}
