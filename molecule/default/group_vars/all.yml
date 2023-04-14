@@ -157,9 +157,9 @@ longhorn_multipathd_blacklist_file: "10-longhorn.conf"
 longhorn_multipathd_blacklist_file_perm: "0644"
 longhorn_label_nodes: true
 longhorn_node_selector_user:
-  longhorn.components: user
+  longhorn.user.components: "yes"
 longhorn_node_selector_system:
-  longhorn.components: system
+  longhorn.system.components: "yes"
 
 lvm_vgs:
   - vgname: vg01
