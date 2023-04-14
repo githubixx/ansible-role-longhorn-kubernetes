@@ -5,6 +5,15 @@ SPDX-License-Identifier: GPL-3.0-or-later
 
 # Changelog
 
+## 0.3.0+1.4.1
+
+- K8s can't handle two keys with the same name but different values. So renamed ` longhorn.components: user` to `longhorn.user.components: yes` and `longhorn.components: system` to `longhorn.system.components: yes`
+- fix K8s node group handling to make it work on Ansible controller nodes different to localhost
+- `templates/longhorn_values_default.yml.j2`: fix `systemManagedComponentsNodeSelector` value. Caused all settings to be completely ignored by Longhorn
+- `templates/longhorn_values_default.yml.j2`: put all values into double quotes
+- `tasks/install.yml`: add `force: true` property/value to install Helm chart
+- `molecule/default/molecule.yml`: add two worker nodes to k8s_longhorn_system hosts group
+
 ## 0.2.1+1.4.1
 
 - update Longhorn to `v1.4.1`
