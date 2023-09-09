@@ -5,6 +5,10 @@ SPDX-License-Identifier: GPL-3.0-or-later
 
 # Changelog
 
+## 0.3.2+1.4.1
+
+- rename `githubixx.harden-linux` to `githubixx.harden_linux`
+
 ## 0.3.1+1.4.1
 
 - rename `githubixx.kubernetes-ca` to `githubixx.kubernetes_ca`
