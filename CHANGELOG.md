@@ -5,6 +5,12 @@ SPDX-License-Identifier: GPL-3.0-or-later
 
 # Changelog
 
+## 0.3.1+1.4.1
+
+- rename `githubixx.kubernetes-ca` to `githubixx.kubernetes_ca`
+- rename `githubixx.kubernetes-controller` to `githubixx.kubernetes_controller`
+- rename `githubixx.kubernetes-worker` to `githubixx.kubernetes_worker`
+
 ## 0.3.0+1.4.1
 
 - K8s can't handle two keys with the same name but different values. So renamed ` longhorn.components: user` to `longhorn.user.components: yes` and `longhorn.components: system` to `longhorn.system.components: yes`
