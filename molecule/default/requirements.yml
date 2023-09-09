@@ -11,7 +11,7 @@ roles:
   - githubixx.kubernetes_ca
   - githubixx.etcd
   - githubixx.kubectl
-  - githubixx.kubernetes-controller
+  - githubixx.kubernetes_controller
   - githubixx.kubernetes_worker
   - githubixx.containerd
   - githubixx.cilium_kubernetes

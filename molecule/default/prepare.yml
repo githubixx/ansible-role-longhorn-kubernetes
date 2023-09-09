@@ -109,7 +109,7 @@
   tasks:
     - name: Install Kubernetes control plane
       ansible.builtin.include_role:
-        name: githubixx.kubernetes-controller
+        name: githubixx.kubernetes_controller
 
 - name: Setup Kubernetes tooling
   hosts: k8s_assets
