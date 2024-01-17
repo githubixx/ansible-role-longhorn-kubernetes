@@ -5,6 +5,12 @@ SPDX-License-Identifier: GPL-3.0-or-later
 
 # Changelog
 
+## 0.4.0+1.5.3
+
+Please read [Longhorn Important Note](https://longhorn.io/docs/1.5.3/deploy/important-notes)[https://longhorn.io/docs/1.5.3/deploy/important-notes] before upgrading!
+
+- update Longhorn to `v1.5.3`
+
 ## 0.3.2+1.4.1
 
 - rename `githubixx.harden-linux` to `githubixx.harden_linux`
