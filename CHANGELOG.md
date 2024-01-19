@@ -7,7 +7,7 @@ SPDX-License-Identifier: GPL-3.0-or-later
 
 ## 0.4.0+1.5.3
 
-Please read [Longhorn Important Note](https://longhorn.io/docs/1.5.3/deploy/important-notes)[https://longhorn.io/docs/1.5.3/deploy/important-notes] before upgrading!
+Please read [Longhorn Important Note](https://longhorn.io/docs/1.5.3/deploy/important-notes) before upgrading!
 
 - **POTENTIALLY BREAKING**: `templates/longhorn_values_default.yml.j2`: removed `mkfsExt4Parameters` (was removed in Longhorn v1.5). This can now be configured in the [StorageClass](https://longhorn.io/docs/1.5.3/references/storage-class-parameters/). Also see [values.yaml](https://github.com/longhorn/longhorn/blob/v1.5.3/chart/values.yaml#L86)
 - `templates/longhorn_values_default.yml.j2`: add two links
