@@ -12,9 +12,9 @@ driver:
     type: libvirt
 
 platforms:
-  - name: test-longhorn-assets
-    box: generic/ubuntu2004
-    memory: 1024
+  - name: test-assets
+    box: generic/ubuntu2204
+    memory: 1536
     cpus: 2
     groups:
       - vpn
@@ -24,13 +24,14 @@ platforms:
       - auto_config: true
         network_name: private_network
         type: static
-        ip: 192.168.10.5
-  - name: test-longhorn-controller1
-    box: generic/ubuntu2004
+        ip: 172.16.10.5
+  - name: test-controller1
+    box: generic/ubuntu2204
     memory: 2048
     cpus: 2
     groups:
       - vpn
+      - haproxy
       - k8s_controller
       - k8s_worker
       - k8s_etcd
@@ -39,13 +40,14 @@ platforms:
       - auto_config: true
         network_name: private_network
         type: static
-        ip: 192.168.10.10
-  - name: test-longhorn-controller2
+        ip: 172.16.10.10
+  - name: test-controller2
     box: generic/ubuntu2004
     memory: 2048
     cpus: 2
     groups:
       - vpn
+      - haproxy
       - k8s_controller
       - k8s_worker
       - k8s_etcd
@@ -54,13 +56,14 @@ platforms:
       - auto_config: true
         network_name: private_network
         type: static
-        ip: 192.168.10.20
-  - name: test-longhorn-controller3
+        ip: 172.16.10.20
+  - name: test-controller3
     box: generic/ubuntu2004
     memory: 2048
     cpus: 2
     groups:
       - vpn
+      - haproxy
       - k8s_controller
       - k8s_worker
       - k8s_etcd
@@ -69,15 +72,16 @@ platforms:
       - auto_config: true
         network_name: private_network
         type: static
-        ip: 192.168.10.30
-  - name: test-longhorn-worker1
-    box: generic/ubuntu2004
+        ip: 172.16.10.30
+  - name: test-worker1
+    box: generic/ubuntu2204
     memory: 2048
     cpus: 2
     provider_raw_config_args:
       - "storage :file, :type => 'qcow2', :device => 'vdb', :size => '1G'"
     groups:
       - vpn
+      - haproxy
       - lvm
       - k8s_worker
       - k8s_longhorn_system
@@ -86,8 +90,8 @@ platforms:
       - auto_config: true
         network_name: private_network
         type: static
-        ip: 192.168.10.100
-  - name: test-longhorn-worker2
+        ip: 172.16.10.100
+  - name: test-worker2
     box: generic/ubuntu2004
     memory: 2048
     cpus: 2
@@ -95,6 +99,7 @@ platforms:
       - "storage :file, :type => 'qcow2', :device => 'vdb', :size => '1G'"
     groups:
       - vpn
+      - haproxy
       - lvm
       - k8s_worker
       - k8s_longhorn_system
@@ -104,15 +109,16 @@ platforms:
       - auto_config: true
         network_name: private_network
         type: static
-        ip: 192.168.10.110
-  - name: test-longhorn-worker3
-    box: generic/ubuntu2004
+        ip: 172.16.10.110
+  - name: test-worker3
+    box: generic/ubuntu2204
     memory: 2048
     cpus: 2
     provider_raw_config_args:
       - "storage :file, :type => 'qcow2', :device => 'vdb', :size => '1G'"
     groups:
       - vpn
+      - haproxy
       - lvm
       - k8s_worker
       - k8s_longhorn_system
@@ -122,8 +128,8 @@ platforms:
       - auto_config: true
         network_name: private_network
         type: static
-        ip: 192.168.10.120
-  - name: test-longhorn-worker4
+        ip: 172.16.10.120
+  - name: test-worker4
     box: generic/ubuntu2004
     memory: 2048
     cpus: 2
@@ -131,6 +137,7 @@ platforms:
       - "storage :file, :type => 'qcow2', :device => 'vdb', :size => '1G'"
     groups:
       - vpn
+      - haproxy
       - lvm
       - k8s_worker
       - k8s_longhorn_system
@@ -140,7 +147,7 @@ platforms:
       - auto_config: true
         network_name: private_network
         type: static
-        ip: 192.168.10.130
+        ip: 172.16.10.130
 
 provisioner:
   name: ansible

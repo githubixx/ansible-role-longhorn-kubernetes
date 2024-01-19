@@ -4,6 +4,8 @@
 
 - name: Setup Longhorn
   hosts: all
+  environment:
+    K8S_AUTH_KUBECONFIG: "{{ k8s_admin_conf_dir }}/admin.kubeconfig"
   tasks:
     - name: Include Longhorn role
       ansible.builtin.include_role:

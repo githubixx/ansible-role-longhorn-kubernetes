@@ -6,12 +6,12 @@ SPDX-License-Identifier: GPL-3.0-or-later
 ansible-role-longhorn_kubernetes
 ================================
 
-This Ansible role installs [Longhorn](https://longhorn.io/) cloud native distributed block storage on a Kubernetes cluster. Behind the doors it uses the official [Helm chart](https://charts.longhorn.io). Currently procedures like installing, upgrading and deleting the `Longhorn` deployment are supported.
+This Ansible role is used in my blog series [Kubernetes the not so hard way with Ansible](https://www.tauceti.blog/posts/kubernetes-the-not-so-hard-way-with-ansible-the-basics/) [Persistent storage - Part 2](https://www.tauceti.blog/posts/kubernetes-the-not-so-hard-way-with-ansible-persistent-storage-part-2/). This Ansible role installs [Longhorn](https://longhorn.io/) cloud native distributed block storage on a Kubernetes cluster. Behind the doors it uses the official [Helm chart](https://charts.longhorn.io). Currently procedures like installing, upgrading and deleting the `Longhorn` deployment are supported.
 
 Versions
 --------
 
-I tag every release and try to stay with [semantic versioning](http://semver.org). If you want to use the role I recommend to checkout the latest tag. The master branch is basically development while the tags mark stable releases. But in general I try to keep master in good shape too. A tag `0.2.1+1.4.1` means this is release `0.2.1` of this role and it contains Longhorn chart version `1.4.1` (which normally is the same as the Longhorn version itself). If the role itself changes `X.Y.Z` before `+` will increase. If the Longhorn chart version changes `X.Y.Z` after `+` will increase too. This allows to tag bugfixes and new major versions of the role while it's still developed for a specific Longhorn release.
+I tag every release and try to stay with [semantic versioning](http://semver.org). If you want to use the role I recommend to checkout the latest tag. The master branch is basically development while the tags mark stable releases. But in general I try to keep master in good shape too. A tag `0.4.0+1.5.3` means this is release `0.4.0` of this role and it contains Longhorn chart version `1.5.3` (which normally is the same as the Longhorn version itself). If the role itself changes `X.Y.Z` before `+` will increase. If the Longhorn chart version changes `X.Y.Z` after `+` will increase too. This allows to tag bugfixes and new major versions of the role while it's still developed for a specific Longhorn release.
 
 Requirements
 ------------
@@ -43,7 +43,7 @@ Role variables
 
 ```yaml
 # Helm chart version
-longhorn_chart_version: "1.4.1"
+longhorn_chart_version: "1.5.3"
 
 # Helm release name
 longhorn_release_name: "longhorn"
@@ -181,11 +181,11 @@ longhorn_label_nodes: false
 Usage
 -----
 
-Before you start installing Longhorn you REALLY want to read the [The Longhorn Documentation](https://longhorn.io/docs/1.4.1/)! As data is the most valuable thing you can have you should understand how Longhorn works and don't forget to add backups later ;-). Esp. have a look at the [best practices](https://longhorn.io/docs/1.4.1/best-practices/).
+Before you start installing Longhorn you REALLY want to read the [The Longhorn Documentation](https://longhorn.io/docs/1.5.3/)! As data is the most valuable thing you can have you should understand how Longhorn works and don't forget to add backups later ;-). Esp. have a look at the [best practices](https://longhorn.io/docs/1.5.3/best-practices/).
 
-That said: The first thing to do is to check `templates/longhorn_values_default.yml.j2`. This file contains the values/settings for the Longhorn Helm chart that are partly default anyways (just to avoid that someone changes the defaults) or different to the default ones which are located [here](https://github.com/longhorn/longhorn/blob/v1.4.1/chart/values.yaml). All settings can be found in the [Settings Reference](https://longhorn.io/docs/1.4.1/references/settings/).
+That said: The first thing to do is to check `templates/longhorn_values_default.yml.j2`. This file contains the values/settings for the Longhorn Helm chart that are partly default anyways (just to avoid that someone changes the defaults) or different to the default ones which are located [here](https://github.com/longhorn/longhorn/blob/v1.5.3/chart/values.yaml). All settings can be found in the [Settings Reference](https://longhorn.io/docs/1.5.3/references/settings/).
 
-To use your own values just create a file called `longhorn_values_user.yml.j2` and put it into the `templates` directory. Then this Longhorn role will use that file to render the Helm values. You can use `templates/longhorn_values_default.yml.j2` as a template or just start from scratch. As mentioned above you can modify all settings for the Longhorn Helm chart that are different to the default ones which are located [here](https://github.com/longhorn/longhorn/blob/v1.4.1/chart/values.yaml).
+To use your own values just create a file called `longhorn_values_user.yml.j2` and put it into the `templates` directory. Then this Longhorn role will use that file to render the Helm values. You can use `templates/longhorn_values_default.yml.j2` as a template or just start from scratch. As mentioned above you can modify all settings for the Longhorn Helm chart that are different to the default ones which are located [here](https://github.com/longhorn/longhorn/blob/v1.5.3/chart/values.yaml).
 
 After the values file (`templates/longhorn_values_default.yml.j2` or `templates/longhorn_values_user.yml.j2`) is in place and the `defaults/main.yml` values are checked and maybe adjusted accordingly, the role can be installed. Quite a few tasks need to communicate with the Kubernetes API server or executing [Helm](https://helm.sh/) commands. By default these commands are executed on the host where the `ansible-playbook` gets executed and the current user is used. But you can delegate this kind of tasks to a different host by using `longhorn_delegate_to` variable (see above).
 
@@ -215,11 +215,11 @@ ansible-playbook --tags=role-longhorn-kubernetes --extra-vars longhorn_action=in
 
 To check if everything was deployed use the usual `kubectl` commands like `kubectl -n <longhorn_namespace> get pods -o wide`. The first installation will take quite some time if your internet connection isn't the fastest one. Lots of container images need to be downloaded.
 
-As Longhorn gets updates/upgrades every few weeks/months the role also can do upgrades. For updates/upgrades (esp. major upgrades) have a look at `tasks/upgrade.yml` to see what's happening before, during and after the update. Of course you should consult Longhorn's [upgrade guide](https://longhorn.io/docs/1.4.1/deploy/upgrade/) (the link is for upgrading to Longhorn `v1.4.1`) to check for major changes and stuff like that before upgrading. Now is also a good time to check if the backups are in place and if the backups are actually valid ;-)
+As Longhorn gets updates/upgrades every few weeks/months the role also can do upgrades. For updates/upgrades (esp. major upgrades) have a look at `tasks/upgrade.yml` to see what's happening before, during and after the update. Of course you should consult Longhorn's [upgrade guide](https://longhorn.io/docs/1.5.3/deploy/upgrade/) (the link is for upgrading to Longhorn `v1.5.3`) to check for major changes and stuff like that before upgrading. Now is also a good time to check if the backups are in place and if the backups are actually valid ;-)
 
-After consulting Longhorn's [upgrade guide](https://longhorn.io/docs/1.4.1/deploy/upgrade/) you basically only need to change `longhorn_chart_version` variable e.g. from `1.4.1` to `1.4.2` for a patch release or from `1.4.1` to `1.5.0` for a major upgrade. And of course the Helm values need to be adjusted for potential breaking changes (if any are mentioned in the upgrade guide e.g.).
+After consulting Longhorn's [upgrade guide](https://longhorn.io/docs/1.5.3/deploy/upgrade/) you basically only need to change `longhorn_chart_version` variable e.g. from `1.5.3` to `1.5.4` for a patch release or from `1.4.3` to `1.5.3` for a major upgrade. And of course the Helm values need to be adjusted for potential breaking changes (if any are mentioned in the upgrade guide e.g.).
 
-You can also use the upgrade method if you keep the version number and just want to change some Helm values or other settings. But please be aware that changing some of settings might have some serious consequences if you already have volumes deployed! Not all Longhorn settings can be changed just by changing a number or a string. So you really want to consult the [Settings reference](https://longhorn.io/docs/1.4.1/references/settings/) to figure out what might happen if you change this or that setting or what you need to do before you apply a changed setting!
+You can also use the upgrade method if you keep the version number and just want to change some Helm values or other settings. But please be aware that changing some of settings might have some serious consequences if you already have volumes deployed! Not all Longhorn settings can be changed just by changing a number or a string. So you really want to consult the [Settings reference](https://longhorn.io/docs/1.5.3/references/settings/) to figure out what might happen if you change this or that setting or what you need to do before you apply a changed setting!
 
 That said to actually do the update/upgrade run
 
@@ -237,7 +237,7 @@ ansible-playbook \
   k8s.yml
 ```
 
-Longhorn has a [Deleting Confirmation Flag](https://longhorn.io/docs/1.4.1/references/settings/#deleting-confirmation-flag) which is set to `false` by default. In this case Longhorn refuses to be uninstalled. By setting `--extra-vars longhorn_delete=true` the Ansible role will set this flag to `true` and afterwards the Longhorn resources can be deleted by the role. Without `longhorn_delete` variable the role will refuse to finish uninstallation.
+Longhorn has a [Deleting Confirmation Flag](https://longhorn.io/docs/1.5.3/references/settings/#deleting-confirmation-flag) which is set to `false` by default. In this case Longhorn refuses to be uninstalled. By setting `--extra-vars longhorn_delete=true` the Ansible role will set this flag to `true` and afterwards the Longhorn resources can be deleted by the role. Without `longhorn_delete` variable the role will refuse to finish uninstallation.
 
 The role also allows to set Kubernetes node labels. First `longhorn_label_nodes: true` must be set. Next the nodes that should be labeled must be assigned to two Ansible groups. By default all nodes that should run Longhorn system components are part of a group called `k8s_longhorn_system`. This can be changed by setting `longhorn_nodes_system` to a different value. For the Longhorn user components the group is called `k8s_longhorn_user`. This can also be changed by adjusting `longhorn_nodes_user` variable value. Finally you need to decide how the labels should be called. This can be done by setting `longhorn_node_selector_system` and `longhorn_node_selector_user` accordingly. All the variables are described in detail above in the variable section.
 

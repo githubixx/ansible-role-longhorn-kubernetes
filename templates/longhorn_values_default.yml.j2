@@ -4,8 +4,11 @@
 
 #
 # For all possible values see:
-# https://github.com/longhorn/longhorn/blob/v1.4.1/chart/values.yaml
+# https://github.com/longhorn/longhorn/blob/v1.5.3/chart/values.yaml
 #
+# Additional important information:
+# https://longhorn.io/docs/1.5.3/best-practices/
+# https://longhorn.io/docs/1.5.3/deploy/important-notes/
 
 csi:
   kubeletRootDir: "/var/lib/kubelet"
@@ -37,11 +40,6 @@ defaultSettings:
   # "Longhorn UI". For Kubernetes configuration, update the
   # "numberOfReplicas" in the "StorageClass".
   defaultReplicaCount: "3"
-
-  # Specify the percentage of the file system blocks reserved for the
-  # super-user. The default percentage is 5% but 2% should be good
-  # enough to not waste too much disk space.
-  mkfsExt4Parameters: "-m 2"
 
   # This setting should be set to false in production environment
   # to ensure every volume have the best availability when created.
