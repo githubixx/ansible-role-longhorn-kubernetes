@@ -20,7 +20,7 @@ You need to have [Helm 3](https://helm.sh/) binary installed on that host where 
 
 - use your favorite package manager if your distribution includes `helm` in its repository (for Archlinux use `sudo pacman -S helm` e.g.)
 - or use one of the Ansible `Helm` roles (e.g. [helm](https://galaxy.ansible.com/gantsign/helm) - which gets also installed if you use `ansible-galaxy role install -vr requirements.yml`
-- or directly download the binary from [Helm releases)[https://github.com/helm/helm/releases]) and put it into `/usr/local/bin/` directory e.g.
+- or directly download the binary from [Helm releases](https://github.com/helm/helm/releases) and put it into `/usr/local/bin/` directory e.g.
 
 A properly configured `KUBECONFIG` is also needed (which is located at `${HOME}/.kube/config` by default). Normally if `kubectl` works with your K8s cluster then everything should be already fine in this regards.
 
