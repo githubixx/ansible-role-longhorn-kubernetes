@@ -4,6 +4,8 @@
 
 - name: Update cache
   hosts: k8s
+  remote_user: vagrant
+  become: true
   gather_facts: true
   tasks:
     - name: Update APT package cache
@@ -13,6 +15,8 @@
 
 - name: Harden hosts
   hosts: all
+  remote_user: vagrant
+  become: true
   gather_facts: true
   tasks:
     - name: Setup harden_linux role
@@ -21,6 +25,8 @@
 
 - name: Setup Wireguard VPN
   hosts: vpn
+  remote_user: vagrant
+  become: true
   gather_facts: true
   tasks:
     - name: Setup wireguard role
@@ -29,6 +35,8 @@
 
 - name: Setup cfssl
   hosts: k8s_assets
+  remote_user: vagrant
+  become: true
   gather_facts: false
   tasks:
     - name: Install cfssl
@@ -51,6 +59,8 @@
 
 - name: Setup etcd
   hosts: k8s_etcd
+  remote_user: vagrant
+  become: true
   gather_facts: true
   tasks:
     - name: Include etcd role
@@ -59,6 +69,7 @@
 
 - name: Setup Kubernetes client tooling
   hosts: k8s_assets
+  become: true
   gather_facts: true
   tasks:
     - name: Install kubectl
@@ -85,6 +96,8 @@
 
 - name: Setup HAProxy
   hosts: ubuntu22
+  remote_user: vagrant
+  become: true
   gather_facts: true
   tasks:
     - name: Setup haproxy role
@@ -93,6 +106,7 @@
 
 - name: Install runc, CNI plugins and containerd
   hosts: k8s_worker
+  become: true
   gather_facts: true
   tasks:
     - name: Include runc role
@@ -109,6 +123,7 @@
 
 - name: Setup Kubernetes controller
   hosts: k8s_controller
+  become: true
   gather_facts: true
   tasks:
     - name: Include kubernetes_controller role
@@ -117,20 +132,31 @@
 
 - name: Prepare kubeconfig for vagrant user
   hosts: k8s_assets
+  become: true
   gather_facts: false
   vars:
     k8s_controller__vagrant_kube_directory: "/home/vagrant/.kube"
   tasks:
     - name: Ensure .kube directory in vagrant home
       ansible.builtin.file:
+        path: "{{ k8s_controller__vagrant_kube_directory }}"
+        state: directory
+        mode: "0700"
+        owner: "vagrant"
+        group: "vagrant"
+
+    - name: Copy admin.kubeconfig to vagrant home directory
+      ansible.builtin.copy:
         src: "{{ k8s_admin_conf_dir }}/admin.kubeconfig"
-        dest: "{{ k8s_admin_conf_dir }}/config"
-        state: link
+        dest: "{{ k8s_controller__vagrant_kube_directory }}/config"
+        mode: "0400"
+        remote_src: true
         owner: "vagrant"
         group: "vagrant"
 
 - name: Setup LVM volumes for Longhorn
   hosts: lvm
+  become: true
   gather_facts: true
   tasks:
     - name: Include LVM role
@@ -139,6 +165,7 @@
 
 - name: Setup K8s worker
   hosts: k8s_worker
+  become: true
   gather_facts: true
   tasks:
     - name: Setup Kubernetes worker
@@ -147,6 +174,7 @@
 
 - name: Setup Cilium
   hosts: k8s_worker
+  become: true
   gather_facts: true
   environment:
     K8S_AUTH_KUBECONFIG: "{{ k8s_admin_conf_dir }}/admin.kubeconfig"
