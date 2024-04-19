@@ -5,6 +5,11 @@ SPDX-License-Identifier: GPL-3.0-or-later
 
 # Changelog
 
+## 0.4.3+1.5.5
+
+- update Longhorn to `v1.5.5`
+- add more information to the UPGRADE section in README
+
 ## 0.4.2+1.5.4
 
 - fix typo in README
