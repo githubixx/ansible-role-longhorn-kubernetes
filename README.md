@@ -3,18 +3,15 @@ Copyright (C) 2023 Robert Wimmer
 SPDX-License-Identifier: GPL-3.0-or-later
 -->
 
-ansible-role-longhorn_kubernetes
-================================
+# ansible-role-longhorn_kubernetes
 
 This Ansible role is used in my blog series [Kubernetes the not so hard way with Ansible](https://www.tauceti.blog/posts/kubernetes-the-not-so-hard-way-with-ansible-the-basics/) [Persistent storage - Part 2](https://www.tauceti.blog/posts/kubernetes-the-not-so-hard-way-with-ansible-persistent-storage-part-2/). This Ansible role installs [Longhorn](https://longhorn.io/) cloud native distributed block storage on a Kubernetes cluster. Behind the doors it uses the official [Helm chart](https://charts.longhorn.io). Currently procedures like installing, upgrading and deleting the `Longhorn` deployment are supported.
 
-Versions
---------
+## Versions
 
 I tag every release and try to stay with [semantic versioning](http://semver.org). If you want to use the role I recommend to checkout the latest tag. The master branch is basically development while the tags mark stable releases. But in general I try to keep master in good shape too. A tag `0.4.3+1.5.5` means this is release `0.4.0` of this role and it contains Longhorn chart version `1.5.5` (which normally is the same as the Longhorn version itself). If the role itself changes `X.Y.Z` before `+` will increase. If the Longhorn chart version changes `X.Y.Z` after `+` will increase too. This allows to tag bugfixes and new major versions of the role while it's still developed for a specific Longhorn release.
 
-Requirements
-------------
+## Requirements
 
 You need to have [Helm 3](https://helm.sh/) binary installed on that host where `ansible-playbook` is executed or on that host where you delegated the playbooks to (e.g. by using `longhorn_delegate_to` variable). You can either
 
@@ -28,18 +25,15 @@ Additionally the Ansible `kubernetes.core` collection needs to be installed. Thi
 
 And of course you need a Kubernetes Cluster ;-)
 
-Additional remarks
-------------------
+## Additional remarks
 
 By default Longhorn uses the path `/var/lib/longhorn` on the K8s worker nodes to store data or replicas of data. First it's a good idea to just keep that path if possible. The same is true for the default namespace `longhorn-system`. This might save you from some trouble later. Second since Longhorn doesn’t currently support sharding between the different disks, its recommend using LVM to aggregate all the disks for Longhorn into a single partition, so it can be easily extended in the future. This role doesn't manage LVM but you can use my [LVM role](https://github.com/githubixx/ansible-role-lvm) or any other Ansible LVM role or whatever automation tool you want or just configure everything manually. The Molecule test (see below) contains an example LVM setup.
 
-Changelog
----------
+## Changelog
 
 See [CHANGELOG.md](https://github.com/githubixx/ansible-role-longhorn-kubernetes/blob/master/CHANGELOG.md)
 
-Role variables
---------------
+## Role variables
 
 ```yaml
 # Helm chart version
@@ -178,8 +172,7 @@ longhorn_label_nodes: false
 # longhorn_multipathd_blacklist_file_perm: "0644"
 ```
 
-Usage
------
+## Usage
 
 Before you start installing Longhorn you REALLY want to read the [The Longhorn Documentation](https://longhorn.io/docs/1.5.5/)! As data is the most valuable thing you can have you should understand how Longhorn works and don't forget to add backups later ;-). Esp. have a look at the [best practices](https://longhorn.io/docs/1.5.5/best-practices/).
 
@@ -255,8 +248,7 @@ To remove the Kubernetes node labels run:
 ansible-playbook --tags=role-longhorn-kubernetes --extra-vars longhorn_action=remove-node-label k8s.yml
 ```
 
-Example Playbook
-----------------
+## Example Playbook
 
 Example 1 (without role tag):
 
@@ -282,8 +274,7 @@ Example 2 (assign tag to role):
       tags: role-longhorn-kubernetes
 ```
 
-Testing
--------
+## Testing
 
 This role has a (full blown) Kubernetes test setup that is created using [Molecule](https://github.com/ansible-community/molecule), libvirt (vagrant-libvirt) and QEMU/KVM. Please see my blog post [Testing Ansible roles with Molecule, libvirt (vagrant-libvirt) and QEMU/KVM](https://www.tauceti.blog/posts/testing-ansible-roles-with-molecule-libvirt-vagrant-qemu-kvm/) how to setup. The test configuration is [here](https://github.com/githubixx/ansible-role-longhorn-kubernetes/tree/master/molecule/default).
 
@@ -317,12 +308,10 @@ To clean up run
 molecule destroy
 ```
 
-License
--------
+## License
 
 GNU GENERAL PUBLIC LICENSE Version 3
 
-Author Information
-------------------
+## Author Information
 
 [http://www.tauceti.blog](http://www.tauceti.blog)
