@@ -5,6 +5,20 @@ SPDX-License-Identifier: GPL-3.0-or-later
 
 # Changelog
 
+## 0.5.0+1.6.1
+
+This is a major release update of Longhorn. Please read [Longhorn Important Notes](https://longhorn.io/docs/1.6.1/deploy/important-notes/) before upgrading!
+
+Further reading:
+
+- [Longhorn v1.6.1 Release Notes](https://github.com/longhorn/longhorn/releases/tag/v1.6.1)
+- [Node Maintenance and Kubernetes Upgrade Guide](https://longhorn.io/docs/1.6.1/maintenance/maintenance/)
+
+Other updates:
+
+- update Longhorn to `v1.6.1`
+- add `cryptsetup` and `dmsetup` as required OS packages
+
 ## 0.4.3+1.5.5
 
 - update Longhorn to `v1.5.5`
@@ -22,7 +36,7 @@ SPDX-License-Identifier: GPL-3.0-or-later
 
 ## 0.4.0+1.5.3
 
-Please read [Longhorn Important Note](https://longhorn.io/docs/1.5.3/deploy/important-notes) before upgrading!
+Please read [Longhorn Important Notes](https://longhorn.io/docs/1.5.3/deploy/important-notes) before upgrading!
 
 - **POTENTIALLY BREAKING**: `templates/longhorn_values_default.yml.j2`: removed `mkfsExt4Parameters` (was removed in Longhorn v1.5). This can now be configured in the [StorageClass](https://longhorn.io/docs/1.5.3/references/storage-class-parameters/). Also see [values.yaml](https://github.com/longhorn/longhorn/blob/v1.5.3/chart/values.yaml#L86)
 - `templates/longhorn_values_default.yml.j2`: add two links
@@ -43,7 +57,7 @@ Please read [Longhorn Important Note](https://longhorn.io/docs/1.5.3/deploy/impo
 
 ## 0.3.0+1.4.1
 
-- K8s can't handle two keys with the same name but different values. So renamed ` longhorn.components: user` to `longhorn.user.components: yes` and `longhorn.components: system` to `longhorn.system.components: yes`
+- K8s can't handle two keys with the same name but different values. So renamed `longhorn.components: user` to `longhorn.user.components: yes` and `longhorn.components: system` to `longhorn.system.components: yes`
 - fix K8s node group handling to make it work on Ansible controller nodes different to localhost
 - `templates/longhorn_values_default.yml.j2`: fix `systemManagedComponentsNodeSelector` value. Caused all settings to be completely ignored by Longhorn
 - `templates/longhorn_values_default.yml.j2`: put all values into double quotes

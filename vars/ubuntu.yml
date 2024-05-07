@@ -13,3 +13,5 @@ longhorn_required_packages:
   - "util-linux"
   - "jq"
   - "coreutils"
+  - "cryptsetup"
+  - "dmsetup"
