@@ -3,7 +3,7 @@
 # SPDX-License-Identifier: GPL-3.0-or-later
 
 # Helm chart version
-longhorn_chart_version: "1.6.1"
+longhorn_chart_version: "1.6.3"
 
 # Helm release name
 longhorn_release_name: "longhorn"
