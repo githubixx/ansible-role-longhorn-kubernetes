@@ -9,7 +9,7 @@ This Ansible role is used in my blog series [Kubernetes the not so hard way with
 
 ## Versions
 
-I tag every release and try to stay with [semantic versioning](http://semver.org). If you want to use the role I recommend to checkout the latest tag. The master branch is basically development while the tags mark stable releases. But in general I try to keep master in good shape too. A tag `0.5.0+1.6.1` means this is release `0.5.0` of this role and it contains Longhorn chart version `1.6.1` (which normally is the same as the Longhorn version itself). If the role itself changes `X.Y.Z` before `+` will increase. If the Longhorn chart version changes `X.Y.Z` after `+` will increase too. This allows to tag bugfixes and new major versions of the role while it's still developed for a specific Longhorn release.
+I tag every release and try to stay with [semantic versioning](http://semver.org). If you want to use the role I recommend to checkout the latest tag. The master branch is basically development while the tags mark stable releases. But in general I try to keep master in good shape too. A tag `0.5.1+1.6.3` means this is release `0.5.1` of this role and it contains Longhorn chart version `1.6.3` (which normally is the same as the Longhorn version itself). If the role itself changes `X.Y.Z` before `+` will increase. If the Longhorn chart version changes `X.Y.Z` after `+` will increase too. This allows to tag bugfixes and new major versions of the role while it's still developed for a specific Longhorn release.
 
 ## Requirements
 
@@ -37,7 +37,7 @@ See [CHANGELOG.md](https://github.com/githubixx/ansible-role-longhorn-kubernetes
 
 ```yaml
 # Helm chart version
-longhorn_chart_version: "1.6.1"
+longhorn_chart_version: "1.6.3"
 
 # Helm release name
 longhorn_release_name: "longhorn"
@@ -176,13 +176,13 @@ longhorn_label_nodes: false
 
 ### Longhorn documentation
 
-Before you start installing Longhorn you REALLY want to read the [The Longhorn Documentation](https://longhorn.io/docs/1.6.1/)! As data is the most valuable thing you can have you should understand how Longhorn works and don't forget to add backups later ;-). Esp. have a look at the [best practices](https://longhorn.io/docs/1.6.1/best-practices/).
+Before you start installing Longhorn you REALLY want to read the [The Longhorn Documentation](https://longhorn.io/docs/1.6.3/)! As data is the most valuable thing you can have you should understand how Longhorn works and don't forget to add backups later ;-). Esp. have a look at the [best practices](https://longhorn.io/docs/1.6.3/best-practices/).
 
 ### Helm chart values
 
-That said: The first thing to do is to check `templates/longhorn_values_default.yml.j2`. This file contains the values/settings for the Longhorn Helm chart that are partly default anyways (just to avoid that someone changes the defaults) or different to the default ones which are located [here](https://github.com/longhorn/longhorn/blob/v1.6.1/chart/values.yaml). All settings can be found in the [Settings Reference](https://longhorn.io/docs/1.6.1/references/settings/).
+That said: The first thing to do is to check `templates/longhorn_values_default.yml.j2`. This file contains the values/settings for the Longhorn Helm chart that are partly default anyways (just to avoid that someone changes the defaults) or different to the default ones which are located [here](https://github.com/longhorn/longhorn/blob/v1.6.3/chart/values.yaml). All settings can be found in the [Settings Reference](https://longhorn.io/docs/1.6.3/references/settings/).
 
-To use your own values just create a file called `longhorn_values_user.yml.j2` and put it into the `templates` directory. Then this Longhorn role will use that file to render the Helm values. You can use `templates/longhorn_values_default.yml.j2` as a template or just start from scratch. As mentioned above you can modify all settings for the Longhorn Helm chart that are different to the default ones which are located [here](https://github.com/longhorn/longhorn/blob/v1.6.1/chart/values.yaml).
+To use your own values just create a file called `longhorn_values_user.yml.j2` and put it into the `templates` directory. Then this Longhorn role will use that file to render the Helm values. You can use `templates/longhorn_values_default.yml.j2` as a template or just start from scratch. As mentioned above you can modify all settings for the Longhorn Helm chart that are different to the default ones which are located [here](https://github.com/longhorn/longhorn/blob/v1.6.3/chart/values.yaml).
 
 ### Render and verify deployment manifests
 
@@ -218,15 +218,15 @@ To check if everything was deployed use the usual `kubectl` commands like `kubec
 
 ### Update/upgrade
 
-As Longhorn gets updates/upgrades every few weeks/months the role also can do upgrades. For updates/upgrades (esp. major upgrades) have a look at `tasks/upgrade.yml` to see what's happening before, during and after the update. In general this Ansible role does what's described in [Upgrade with Helm](https://longhorn.io/docs/1.6.1/deploy/upgrade/longhorn-manager/#upgrade-with-helm) in the [Upgrading Longhorn Manager](https://longhorn.io/docs/1.6.1/deploy/upgrade/longhorn-manager/) documentation. So in this step only the Longhorn Manager gets updated. After Ansible applied the update/upgrade wait till all Longhorn Pods are ready again.
+As Longhorn gets updates/upgrades every few weeks/months the role also can do upgrades. For updates/upgrades (esp. major upgrades) have a look at `tasks/upgrade.yml` to see what's happening before, during and after the update. In general this Ansible role does what's described in [Upgrade with Helm](https://longhorn.io/docs/1.6.3/deploy/upgrade/longhorn-manager/#upgrade-with-helm) in the [Upgrading Longhorn Manager](https://longhorn.io/docs/1.6.3/deploy/upgrade/longhorn-manager/) documentation. So in this step only the Longhorn Manager gets updated. After Ansible applied the update/upgrade wait till all Longhorn Pods are ready again.
 
-By default the Longhorn volume engines are NOT upgraded automatically. That means in the `Volumes` overview of the Longhorn UI one needs to click on the burger menu in the `Operation` column and run `Upgrade Engine`. To make yourself live easier, **make sure** that all volumes are in `Healthy` state before you upgrade anything. If you want to avoid this manual task of upgrading the volumes to the latest engine version you can set `Concurrent Automatic Engine Upgrade Per Node Limit` to `1` e.g. in `Settings / General` in the Longhorn UI. This setting controls how Longhorn automatically upgrades volumes' engines after upgrading Longhorn manager. The value of this setting specifies the maximum number of engines per node that are allowed to upgrade to the default engine image at the same time. If the value is `0`, Longhorn will not automatically upgrade volumes' engines to default version. For further information see [Automatically Upgrading Longhorn Engine](https://longhorn.io/docs/1.6.1/deploy/upgrade/auto-upgrade-engine/). If you want to do the volume engine upgrade manually have a look at [Manually Upgrading Longhorn Engine](https://longhorn.io/docs/1.6.1/deploy/upgrade/upgrade-engine/)
+By default the Longhorn volume engines are NOT upgraded automatically. That means in the `Volumes` overview of the Longhorn UI one needs to click on the burger menu in the `Operation` column and run `Upgrade Engine`. To make yourself live easier, **make sure** that all volumes are in `Healthy` state before you upgrade anything. If you want to avoid this manual task of upgrading the volumes to the latest engine version you can set `Concurrent Automatic Engine Upgrade Per Node Limit` to `1` e.g. in `Settings / General` in the Longhorn UI. This setting controls how Longhorn automatically upgrades volumes' engines after upgrading Longhorn manager. The value of this setting specifies the maximum number of engines per node that are allowed to upgrade to the default engine image at the same time. If the value is `0`, Longhorn will not automatically upgrade volumes' engines to default version. For further information see [Automatically Upgrading Longhorn Engine](https://longhorn.io/docs/1.6.3/deploy/upgrade/auto-upgrade-engine/). If you want to do the volume engine upgrade manually have a look at [Manually Upgrading Longhorn Engine](https://longhorn.io/docs/1.6.3/deploy/upgrade/upgrade-engine/)
 
-Of course you should consult Longhorn's [upgrade guide](https://longhorn.io/docs/1.6.1/deploy/upgrade/) (the link is for upgrading to Longhorn `v1.6.1`) to check for major changes and stuff like that before upgrading. Now is also a good time to check if the backups are in place and if the backups are actually valid ;-)
+Of course you should consult Longhorn's [upgrade guide](https://longhorn.io/docs/1.6.3/deploy/upgrade/) (the link is for upgrading to Longhorn `v1.6.3`) to check for major changes and stuff like that before upgrading. Now is also a good time to check if the backups are in place and if the backups are actually valid ;-)
 
-After consulting Longhorn's [upgrade guide](https://longhorn.io/docs/1.6.1/deploy/upgrade/) you basically only need to change `longhorn_chart_version` variable e.g. from `1.5.4` to `1.5.5` for a patch release or from `1.5.5` to `1.6.1` for a major upgrade. And of course the Helm values need to be adjusted for potential breaking changes (if any are mentioned in the upgrade guide e.g.). But please remember that MOST settings shouldn't be changed anymore via the Helm values file but via the Longhorn UI in `Settings / General` e.g.
+After consulting Longhorn's [upgrade guide](https://longhorn.io/docs/1.6.3/deploy/upgrade/) you basically only need to change `longhorn_chart_version` variable e.g. from `1.5.4` to `1.5.5` for a patch release or from `1.5.5` to `1.6.3` for a major upgrade. And of course the Helm values need to be adjusted for potential breaking changes (if any are mentioned in the upgrade guide e.g.). But please remember that MOST settings shouldn't be changed anymore via the Helm values file but via the Longhorn UI in `Settings / General` e.g.
 
-You can also use the upgrade method if you keep the version number and just want to change some Helm values or other settings. But please be aware that changing some of settings might have some serious consequences if you already have volumes deployed! Not all Longhorn settings can be changed just by changing a number or a string. So you really want to consult the [Settings reference](https://longhorn.io/docs/1.6.1/references/settings/) to figure out what might happen if you change this or that setting or what you need to do before you apply a changed setting!
+You can also use the upgrade method if you keep the version number and just want to change some Helm values or other settings. But please be aware that changing some of settings might have some serious consequences if you already have volumes deployed! Not all Longhorn settings can be changed just by changing a number or a string. So you really want to consult the [Settings reference](https://longhorn.io/docs/1.6.3/references/settings/) to figure out what might happen if you change this or that setting or what you need to do before you apply a changed setting!
 
 That said to actually do the update/upgrade run
 
@@ -246,7 +246,7 @@ ansible-playbook \
   k8s.yml
 ```
 
-Longhorn has a [Deleting Confirmation Flag](https://longhorn.io/docs/1.6.1/references/settings/#deleting-confirmation-flag) which is set to `false` by default. In this case Longhorn refuses to be uninstalled. By setting `--extra-vars longhorn_delete=true` the Ansible role will set this flag to `true` and afterwards the Longhorn resources can be deleted by the role. Without `longhorn_delete` variable the role will refuse to finish uninstallation.
+Longhorn has a [Deleting Confirmation Flag](https://longhorn.io/docs/1.6.3/references/settings/#deleting-confirmation-flag) which is set to `false` by default. In this case Longhorn refuses to be uninstalled. By setting `--extra-vars longhorn_delete=true` the Ansible role will set this flag to `true` and afterwards the Longhorn resources can be deleted by the role. Without `longhorn_delete` variable the role will refuse to finish uninstallation.
 
 ## Setting/removing node labels
 

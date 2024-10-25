@@ -7,9 +7,9 @@ harden_linux_ntp: "systemd-timesyncd"
 
 # Password for user "root" and "vagrant" is "vagrant" in both cases. As
 # "vagrant" user is available in every Vagrant Ubuntu Box just use it.
-harden_linux_root_password: "$6$rounds=656000$mysecretsalt$fpyQ9hMON6iKKuM0Rz10WZKNJR4OkQTVfBmd4SPrJPsU9XmgQGRtogcUnFB5FLRIitswuQFr6Tr8Mos9l7Ojm0"
+harden_linux_root_password: "$6$ec6PmcEygP6do8Ls$847Pqqo1fXJFeMvPkmP3ipLQ9vhny1PYtwnnIptpZ1Sc8KXUuPGu29aUTOdNdgIfxR3Bix5SUkNfSMMCetej41"
 harden_linux_deploy_user: "vagrant"
-harden_linux_deploy_user_password: "$6$rounds=656000$mysecretsalt$fpyQ9hMON6iKKuM0Rz10WZKNJR4OkQTVfBmd4SPrJPsU9XmgQGRtogcUnFB5FLRIitswuQFr6Tr8Mos9l7Ojm0"
+harden_linux_deploy_user_password: "$6$ec6PmcEygP6do8Ls$847Pqqo1fXJFeMvPkmP3ipLQ9vhny1PYtwnnIptpZ1Sc8KXUuPGu29aUTOdNdgIfxR3Bix5SUkNfSMMCetej41"
 harden_linux_deploy_user_home: "/home/vagrant"
 harden_linux_deploy_user_uid: "1000"
 harden_linux_deploy_user_shell: "/bin/bash"
@@ -28,30 +28,6 @@ harden_linux_sshd_settings_user:
   "^PasswordAuthentication": "PasswordAuthentication yes"
   "^PermitRootLogin": "PermitRootLogin yes"
 
-# Open a few ports for ssh, Wireguard, HTTP, HTTPS and SMTP.
-harden_linux_ufw_rules:
-  - rule: "allow"
-    to_port: "22"
-    protocol: "tcp"
-  - rule: "allow"
-    to_port: "51820"
-    protocol: "udp"
-  - rule: "allow"
-    to_port: "80"
-    protocol: "tcp"
-  - rule: "allow"
-    to_port: "443"
-    protocol: "tcp"
-  - rule: "allow"
-    to_port: "25"
-    protocol: "tcp"
-
-# Allow all traffic from the following networks.
-harden_linux_ufw_allow_networks:
-  - "10.0.0.0/8"
-  - "172.16.0.0/12"
-  - "192.168.0.0/16"
-
 # Enable logging for UFW.
 harden_linux_ufw_logging: 'on'
 
@@ -68,6 +44,15 @@ harden_linux_sshguard_whitelist:
   - "172.16.0.0/12"
   - "192.168.0.0/16"
 
+# DNS
+harden_linux_systemd_resolved_settings:
+  - DNS=
+  - DNS=8.8.8.8 1.1.1.1 2606:4700:4700::1111 2620:fe::fe
+  - FallbackDNS=
+  - FallbackDNS=149.112.112.112 1.0.0.1 2620:fe::9 2606:4700:4700::1001
+  - DNSOverTLS=
+  - DNSOverTLS=opportunistic
+
 # Directory where the etcd certificates are stored on the Ansible controller
 # host. Certificate files for etcd will be copied from this directory to
 # the etcd nodes.
@@ -80,9 +65,14 @@ etcd_interface: "{{ k8s_interface }}"
 etcd_settings_user:
   "heartbeat-interval": "250"
   "election-timeout": "2500"
-
-# Generate certificates for Cilium to be able to connect to "etcd"
-# cluster to store its state.
+# Host names and IP addresses in the etcd certificates.
+etcd_cert_hosts:
+  - localhost
+  - 127.0.0.1
+# This list should contain all etcd clients that wants to connect to the etcd
+# cluster. The most important client is "kube-apiserver" of course. Also
+# "cilium" should connect. So we add this here too to generate the needed
+# certificates.
 etcd_additional_clients:
   - cilium
   - k8s-apiserver-etcd
@@ -142,8 +132,39 @@ k8s_encryption_config_key: "Y29uZmlndXJhdGlvbjIyCg=="
 k8s_apiserver_settings_user:
   "enable-aggregator-routing": "true"
 
+k8s_worker_kubelet_settings:
+  "config": "{{ k8s_worker_kubelet_conf_dir }}/kubelet-config.yaml"
+  "node-ip": "{{ hostvars[inventory_hostname]['ansible_' + k8s_interface].ipv4.address }}"
+  "kubeconfig": "{{ k8s_worker_kubelet_conf_dir }}/kubeconfig"
+  "seccomp-default": ""
+
 # Directory for the "runc" binaries
 runc_bin_directory: "/usr/local/sbin"
+
+# Directory to store the "containerd" archive after download
+containerd_tmp_directory: "/tmp"
+
+# Use "etcd" for Cilium
+cilium_etcd_enabled: "true"
+# Delegate Cilium tasks that needs to communicate with the Kubernetes API
+# server to the following host.
+cilium_delegate_to: "test-assets"
+# Template directory for custom "values.yml.j2"
+cilium_chart_values_directory: "templates"
+# Show debug output for Cilium Helm commands.
+cilium_helm_show_commands: true
+cilium_etcd_interface: "{{ k8s_interface }}"
+cilium_etcd_client_port: 2379
+cilium_etcd_nodes_group: "k8s_etcd"
+
+cilium_etcd_secrets_name: "cilium-etcd-secrets"
+cilium_etcd_cert_directory: "{{ k8s_ca_conf_directory }}"
+cilium_etcd_cafile: "ca-etcd.pem"
+cilium_etcd_certfile: "cert-cilium.pem"
+cilium_etcd_keyfile: "cert-cilium-key.pem"
+
+# Delegate tasks to create CoreDNS K8s resources to this host.
+coredns_delegate_to: "test-assets"
 
 # Common name for "etcd" certificate authority certificates.
 ca_etcd_csr_cn: "etcd"
@@ -192,10 +213,6 @@ k8s_controller_manager_sa_csr_key_size: "384"
 
 k8s_kube_proxy_csr_key_algo: "ecdsa"
 k8s_kube_proxy_csr_key_size: "384"
-
-# Cilium
-cilium_delegate_to: "test-assets"
-cilium_etcd_cert_directory: "{{ k8s_ca_conf_directory }}"
 
 # Longhorn settings
 longhorn_template_output_directory: "/tmp/longhorn"

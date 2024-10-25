@@ -2,6 +2,14 @@
 # Copyright (C) 2023 Robert Wimmer
 # SPDX-License-Identifier: GPL-3.0-or-later
 
+- name: Gather facts
+  hosts: all
+  become: true
+  gather_facts: true
+  tasks:
+    - name: Populate Ansible hostVars
+      ansible.builtin.setup:
+
 - name: Setup Longhorn
   hosts: all
   environment:

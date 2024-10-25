@@ -5,6 +5,18 @@ SPDX-License-Identifier: GPL-3.0-or-later
 
 # Changelog
 
+## 0.5.1+1.6.3
+
+- update Longhorn to `v1.6.3`
+- update `.yamllint`
+- update Molecule test
+
+Further reading:
+
+- [Longhorn v1.6.3 Release Notes](https://github.com/longhorn/longhorn/releases/tag/v1.6.3)
+- [Upgrading from v1.6.x (< v1.6.3) or v1.5.x](https://longhorn.io/docs/1.6.3/deploy/upgrade/longhorn-manager/)
+- [Node Maintenance and Kubernetes Upgrade Guide](https://longhorn.io/docs/1.6.3/maintenance/maintenance/)
+
 ## 0.5.0+1.6.1
 
 This is a major release update of Longhorn. Please read [Longhorn Important Notes](https://longhorn.io/docs/1.6.1/deploy/important-notes/) before upgrading!
@@ -12,6 +24,7 @@ This is a major release update of Longhorn. Please read [Longhorn Important Note
 Further reading:
 
 - [Longhorn v1.6.1 Release Notes](https://github.com/longhorn/longhorn/releases/tag/v1.6.1)
+- [Upgrading from v1.6.x (< v1.6.3) or v1.5.x](https://longhorn.io/docs/1.6.3/deploy/upgrade/longhorn-manager/)
 - [Node Maintenance and Kubernetes Upgrade Guide](https://longhorn.io/docs/1.6.1/maintenance/maintenance/)
 
 Other updates:

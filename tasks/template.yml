@@ -20,7 +20,7 @@
       ansible.builtin.template:
         src: "{{ lookup('first_found', params) }}"
         dest: "{{ longhorn__values_tmp_file.path }}"
-        mode: 0600
+        mode: "0600"
       delegate_to: "{{ longhorn_delegate_to }}"
       run_once: true
       vars:
@@ -57,7 +57,7 @@
       ansible.builtin.file:
         dest: "{{ longhorn_template_output_directory }}"
         state: directory
-        mode: 0755
+        mode: "0755"
       run_once: true
       delegate_to: "{{ longhorn_delegate_to }}"
 
@@ -65,7 +65,7 @@
       ansible.builtin.copy:
         dest: "{{ longhorn_template_output_directory }}/template.yml"
         content: "{{ longhorn__template.stdout }}"
-        mode: 0644
+        mode: "0644"
       run_once: true
       delegate_to: "{{ longhorn_delegate_to }}"
 
