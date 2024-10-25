@@ -13,7 +13,7 @@ driver:
 
 platforms:
   - name: test-assets
-    box: alvistack/ubuntu-22.04
+    box: alvistack/ubuntu-24.04
     memory: 2048
     cpus: 2
     groups:
@@ -26,7 +26,7 @@ platforms:
         type: static
         ip: 172.16.10.5
   - name: test-controller1
-    box: alvistack/ubuntu-22.04
+    box: alvistack/ubuntu-24.04
     memory: 2048
     cpus: 2
     groups:
@@ -34,7 +34,6 @@ platforms:
       - haproxy
       - k8s_controller
       - k8s_worker
-      - k8s_etcd
       - k8s
     interfaces:
       - auto_config: true
@@ -42,7 +41,7 @@ platforms:
         type: static
         ip: 172.16.10.10
   - name: test-controller2
-    box: alvistack/ubuntu-20.04
+    box: alvistack/ubuntu-24.04
     memory: 2048
     cpus: 2
     groups:
@@ -50,7 +49,6 @@ platforms:
       - haproxy
       - k8s_controller
       - k8s_worker
-      - k8s_etcd
       - k8s
     interfaces:
       - auto_config: true
@@ -66,71 +64,68 @@ platforms:
       - haproxy
       - k8s_controller
       - k8s_worker
-      - k8s_etcd
       - k8s
     interfaces:
       - auto_config: true
         network_name: private_network
         type: static
         ip: 172.16.10.30
-  - name: test-worker1
-    box: alvistack/ubuntu-22.04
+  - name: test-etcd1
+    box: alvistack/ubuntu-24.04
     memory: 2048
     cpus: 2
-    provider_raw_config_args:
-      - "storage :file, :type => 'qcow2', :device => 'vdb', :size => '1G'"
     groups:
       - vpn
-      - haproxy
-      - lvm
-      - k8s_worker
-      - k8s_longhorn_system
-      - k8s
+      - k8s_etcd
     interfaces:
       - auto_config: true
         network_name: private_network
         type: static
         ip: 172.16.10.100
-  - name: test-worker2
-    box: alvistack/ubuntu-20.04
+  - name: test-etcd2
+    box: alvistack/ubuntu-24.04
     memory: 2048
     cpus: 2
-    provider_raw_config_args:
-      - "storage :file, :type => 'qcow2', :device => 'vdb', :size => '1G'"
     groups:
       - vpn
-      - haproxy
-      - lvm
-      - k8s_worker
-      - k8s_longhorn_system
-      - k8s_longhorn_user
-      - k8s
+      - k8s_etcd
     interfaces:
       - auto_config: true
         network_name: private_network
         type: static
         ip: 172.16.10.110
-  - name: test-worker3
-    box: alvistack/ubuntu-22.04
+  - name: test-etcd3
+    box: alvistack/ubuntu-24.04
     memory: 2048
     cpus: 2
-    provider_raw_config_args:
-      - "storage :file, :type => 'qcow2', :device => 'vdb', :size => '1G'"
     groups:
       - vpn
-      - haproxy
-      - lvm
-      - k8s_worker
-      - k8s_longhorn_system
-      - k8s_longhorn_user
-      - k8s
+      - k8s_etcd
     interfaces:
       - auto_config: true
         network_name: private_network
         type: static
         ip: 172.16.10.120
-  - name: test-worker4
-    box: alvistack/ubuntu-20.04
+  - name: test-worker1
+    box: alvistack/ubuntu-24.04
+    memory: 2048
+    cpus: 2
+    provider_raw_config_args:
+      - "storage :file, :type => 'qcow2', :device => 'vdb', :size => '1G'"
+    groups:
+      - vpn
+      - haproxy
+      - lvm
+      - k8s_worker
+      - k8s_longhorn_system
+      - k8s
+    interfaces:
+      - auto_config: true
+        network_name: private_network
+        type: static
+        ip: 172.16.10.200
+  - name: test-worker2
+    box: alvistack/ubuntu-24.04
     memory: 2048
     cpus: 2
     provider_raw_config_args:
@@ -147,7 +142,45 @@ platforms:
       - auto_config: true
         network_name: private_network
         type: static
-        ip: 172.16.10.130
+        ip: 172.16.10.210
+  - name: test-worker3
+    box: alvistack/ubuntu-24.04
+    memory: 2048
+    cpus: 2
+    provider_raw_config_args:
+      - "storage :file, :type => 'qcow2', :device => 'vdb', :size => '1G'"
+    groups:
+      - vpn
+      - haproxy
+      - lvm
+      - k8s_worker
+      - k8s_longhorn_system
+      - k8s_longhorn_user
+      - k8s
+    interfaces:
+      - auto_config: true
+        network_name: private_network
+        type: static
+        ip: 172.16.10.220
+  - name: test-worker4
+    box: alvistack/ubuntu-24.04
+    memory: 2048
+    cpus: 2
+    provider_raw_config_args:
+      - "storage :file, :type => 'qcow2', :device => 'vdb', :size => '1G'"
+    groups:
+      - vpn
+      - haproxy
+      - lvm
+      - k8s_worker
+      - k8s_longhorn_system
+      - k8s_longhorn_user
+      - k8s
+    interfaces:
+      - auto_config: true
+        network_name: private_network
+        type: static
+        ip: 172.16.10.230
 
 provisioner:
   name: ansible
