@@ -93,7 +93,7 @@ longhorn_label_nodes: false
 # Tip: Set Longhorn To Only Use Storage On A Specific Set Of Nodes
 # https://longhorn.io/kb/tip-only-use-storage-on-a-set-of-nodes/
 #
-# This/these node selector(s) will be used for the followning Longhorn
+# This/these node selector(s) will be used for the following Longhorn
 # "user components":
 #
 # - Manager
