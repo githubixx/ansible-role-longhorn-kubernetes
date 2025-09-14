@@ -1,14 +1,37 @@
-
-# Copyright (C) 2023 Robert Wimmer
+# Copyright (C) 2025 Robert Wimmer
 # SPDX-License-Identifier: GPL-3.0-or-later
 
 #
 # For all possible values see:
-# https://github.com/longhorn/longhorn/blob/v1.6.3/chart/values.yaml
+# https://github.com/longhorn/longhorn/blob/76fb3e789ab6b221a4bdfee96ffff3800f614501/chart/values.yaml
 #
 # Additional important information:
-# https://longhorn.io/docs/1.6.3/best-practices/
-# https://longhorn.io/docs/1.6.3/deploy/important-notes/
+# https://longhorn.io/docs/archives/1.7.3/best-practices/
+# https://longhorn.io/docs/archives/1.7.3/important-notes
+
+# Changelogs:
+# https://github.com/longhorn/longhorn/releases/tag/v1.7.0
+# https://github.com/longhorn/longhorn/releases/tag/v1.7.1
+# https://github.com/longhorn/longhorn/releases/tag/v1.7.2
+# https://github.com/longhorn/longhorn/releases/tag/v1.7.3
+
+# IMPORTANT: Temporary setting for Longhorn v1.7.3 update. 
+# The longhorn-share-manager v1.7.3 is impacted by a regression issue in
+# nfs-ganesha v6.0+, which causes unexpected “permission denied” errors
+# when non-root users access RWX volumes. To resolve this issue, replace
+# longhorn-share-manager:v1.7.3 with the hotfixed image
+# longhorn-share-manager:v1.7.3-hotfix-1.
+# See: https://longhorn.io/docs/archives/1.7.3/important-notes/#warning
+# See: https://github.com/longhorn/longhorn/blob/76fb3e789ab6b221a4bdfee96ffff3800f614501/chart/values.yaml#L58-L62
+image:
+  longhorn:
+    shareManager:
+      # -- Registry for the Longhorn Share Manager image.
+      registry: ""
+      # -- Repository for the Longhorn Share Manager image.
+      repository: longhornio/longhorn-share-manager
+      # -- Tag for the Longhorn Share Manager image.
+      tag: v1.7.3-hotfix-1
 
 csi:
   kubeletRootDir: "/var/lib/kubelet"
@@ -55,12 +78,12 @@ defaultSettings:
 
   # If the "defaultDataPath" is located on the "root" disk set this
   # value to 25 (in percent). Otherwise "kubelet" might decide to
-  # mark a Kubernetes node as unscheduable. By default this happens
+  # mark a Kubernetes node as unschedulable. By default this happens
   # if disk is 80% full. If "defaultDataPath" is on a separate disk
   # (which makes very much sense) 10 percent are fine.
   storageMinimalAvailablePercentage: "10"
 
-  # Enable this setting automatically rebalances replicas when
+  # Enable this setting automatically rebalance replicas when
   # discovered an available node.
   # The available global options are:
   # - disabled:     This is the default option. No replica auto-balance
