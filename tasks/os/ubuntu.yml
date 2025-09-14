@@ -1,11 +1,21 @@
 ---
-# Copyright (C) 2023 Robert Wimmer
+# Copyright (C) 2018-2025 Robert Wimmer
 # SPDX-License-Identifier: GPL-3.0-or-later
 
 - name: Install packages required for Longhorn
   ansible.builtin.package:
     name: "{{ longhorn_required_packages }}"
     state: "present"
+
+- name: Ensure dm_crypt kernel module
+  community.general.modprobe:
+    name: dm_crypt
+    state: present
+  register: longhorn__dm_crypt_module_enabled
+  until: longhorn__dm_crypt_module_enabled is succeeded
+  retries: 10
+  delay: 10
+  failed_when: longhorn__dm_crypt_module_enabled is failure
 
 - name: Ensure iscsi_tcp kernel module
   community.general.modprobe:

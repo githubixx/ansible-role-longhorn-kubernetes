@@ -1,5 +1,5 @@
 ---
-# Copyright (C) 2023 Robert Wimmer
+# Copyright (C) 2018-2025 Robert Wimmer
 # SPDX-License-Identifier: GPL-3.0-or-later
 
 - name: Update cache
@@ -24,7 +24,7 @@
         path: /var/run/reboot-required
       register: reboot_required_kernel_check
 
-    - name: Collect reboot information
+    - name: Collect reboot information for kernel
       ansible.builtin.set_fact:
         reboot_required_kernel: "{{ reboot_required_kernel_check.stat.exists }}"
 
@@ -33,7 +33,7 @@
         path: /var/run/reboot-required.pkgs
       register: reboot_required_pkgs_check
 
-    - name: Collect reboot information
+    - name: Collect reboot information for packages
       ansible.builtin.set_fact:
         reboot_required_pkgs: "{{ reboot_required_pkgs_check.stat.exists }}"
 
@@ -66,7 +66,7 @@
       ansible.builtin.package:
         name: "{{ packages }}"
         state: present
-      vars: 
+      vars:
         packages:
           - conntrack
           - python3-pip

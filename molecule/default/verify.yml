@@ -1,5 +1,5 @@
 ---
-# Copyright (C) 2023 Robert Wimmer
+# Copyright (C) 2018-2025 Robert Wimmer
 # SPDX-License-Identifier: GPL-3.0-or-later
 
 - name: Verify setup
@@ -19,13 +19,13 @@
       ansible.builtin.debug:
         var: longhorn_verify_longhorn_manager_daemonset_info
       when: ansible_verbosity > 1
-      
+
     - name: There should be a DaemonSet called longhorn-manager
       ansible.builtin.assert:
         that:
           - longhorn_verify_longhorn_manager_daemonset_info.resources[0].metadata.name == "longhorn-manager"
-          
+
     - name: There should be at least one Longhorn pod running
-      ansible.builtin.assert: 
+      ansible.builtin.assert:
         that:
           - (longhorn_verify_longhorn_manager_daemonset_info.resources[0].status.numberReady | default(0) | int) >= 1
