@@ -1,9 +1,9 @@
 ---
-# Copyright (C) 2023 Robert Wimmer
+# Copyright (C) 2025 Robert Wimmer
 # SPDX-License-Identifier: GPL-3.0-or-later
 
 # Helm chart version
-longhorn_chart_version: "1.6.3"
+longhorn_chart_version: "1.7.3"
 
 # Helm release name
 longhorn_release_name: "longhorn"
