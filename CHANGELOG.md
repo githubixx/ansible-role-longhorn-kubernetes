@@ -1,9 +1,38 @@
 <!--
-Copyright (C) 2023 Robert Wimmer
+Copyright (C) 2025 Robert Wimmer
 SPDX-License-Identifier: GPL-3.0-or-later
 -->
 
 # Changelog
+
+## 0.6.0+1.7.3
+
+This is a major release update of Longhorn. Please read [Longhorn Important Notes](https://longhorn.io/docs/archives/1.7.3/important-notes) before upgrading!
+
+Consider doing a [Longhorn System Backup](https://longhorn.io/docs/archives/1.7.0/advanced-resources/system-backup-restore/backup-longhorn-system/) before the upgrade!
+
+Starting with v1.5.0, Longhorn only supports upgrades from one minor version to the next. For example, upgrading from 1.5.x to 1.6.x is supported, but skipping versions (e.g., from 1.4.x to 1.6.x) is not.
+
+Moreover, Longhorn does not support downgrades to earlier versions. This restriction helps prevent unexpected system behavior and issues associated with function incompatibility, deprecation, or removal.
+
+### Changes to the role
+
+- update Longhorn to `v1.7.3`
+- ensure `dm_crypt` kernel module is loaded
+- update `.gitignore`
+
+### Further reading
+
+Additional important information:
+
+- [Best practices](https://longhorn.io/docs/archives/1.7.3/best-practices/)
+
+### Changelogs
+
+- [Longhorn v1.7.0 Release Notes](https://github.com/longhorn/longhorn/releases/tag/v1.7.0)
+- [Longhorn v1.7.1 Release Notes](https://github.com/longhorn/longhorn/releases/tag/v1.7.1)
+- [Longhorn v1.7.2 Release Notes](https://github.com/longhorn/longhorn/releases/tag/v1.7.2)
+- [Longhorn v1.7.3 Release Notes](https://github.com/longhorn/longhorn/releases/tag/v1.7.3)
 
 ## 0.5.1+1.6.3
 
