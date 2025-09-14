@@ -66,7 +66,7 @@
       ansible.builtin.package:
         name: "{{ packages }}"
         state: present
-      vars: 
+      vars:
         packages:
           - conntrack
           - python3-pip
