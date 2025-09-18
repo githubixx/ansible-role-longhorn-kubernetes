@@ -31,9 +31,9 @@ Additional important information:
 
 ### Changelogs
 
-- [Longhorn v1.7.0 Release Notes](https://github.com/longhorn/longhorn/releases/tag/v1.7.0)
-- [Longhorn v1.7.1 Release Notes](https://github.com/longhorn/longhorn/releases/tag/v1.7.1)
-- [Longhorn v1.7.2 Release Notes](https://github.com/longhorn/longhorn/releases/tag/v1.7.2)
+- [Longhorn v1.8.0 Release Notes](https://github.com/longhorn/longhorn/releases/tag/v1.8.0)
+- [Longhorn v1.8.1 Release Notes](https://github.com/longhorn/longhorn/releases/tag/v1.8.1)
+- [Longhorn v1.8.2 Release Notes](https://github.com/longhorn/longhorn/releases/tag/v1.8.2)
 
 ## 0.6.0+1.7.3
 
