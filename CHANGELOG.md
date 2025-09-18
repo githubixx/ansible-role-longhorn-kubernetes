@@ -5,6 +5,36 @@ SPDX-License-Identifier: GPL-3.0-or-later
 
 # Changelog
 
+## 0.7.0+1.8.2
+
+This is a major release update of Longhorn. Please read Longhorn important notes before upgrading:
+
+- [Longhorn Important Notes 1.8.0](https://longhorn.io/docs/1.8.0/important-notes/)
+- [Longhorn Important Notes 1.8.1](https://longhorn.io/docs/1.8.1/important-notes/)
+- [Longhorn Important Notes 1.8.2](https://longhorn.io/docs/1.8.2/important-notes/)
+
+Consider doing a [Longhorn System Backup](https://longhorn.io/docs/1.8.2/advanced-resources/system-backup-restore/backup-longhorn-system/) before the upgrade!
+
+Starting with v1.5.0, Longhorn only supports upgrades from one minor version to the next. For example, upgrading from 1.7.x to 1.8.x is supported, but skipping versions (e.g., from 1.6.x to 1.8.x) is not.
+
+Moreover, Longhorn does not support downgrades to earlier versions. This restriction helps prevent unexpected system behavior and issues associated with function incompatibility, deprecation, or removal.
+
+### Changes to the role
+
+- update Longhorn to `v1.8.2`
+
+### Further reading
+
+Additional important information:
+
+- [Best practices](https://longhorn.io/docs/1.8.2/best-practices/)
+
+### Changelogs
+
+- [Longhorn v1.8.0 Release Notes](https://github.com/longhorn/longhorn/releases/tag/v1.8.0)
+- [Longhorn v1.8.1 Release Notes](https://github.com/longhorn/longhorn/releases/tag/v1.8.1)
+- [Longhorn v1.8.2 Release Notes](https://github.com/longhorn/longhorn/releases/tag/v1.8.2)
+
 ## 0.6.0+1.7.3
 
 This is a major release update of Longhorn. Please read [Longhorn Important Notes](https://longhorn.io/docs/archives/1.7.3/important-notes) before upgrading!
