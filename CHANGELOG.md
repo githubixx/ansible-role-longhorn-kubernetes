@@ -22,6 +22,7 @@ Moreover, Longhorn does not support downgrades to earlier versions. This restric
 ### Changes to the role
 
 - update Longhorn to `v1.9.2`
+- Ensure `nfs` module is enabled
 
 ### Further reading
 
