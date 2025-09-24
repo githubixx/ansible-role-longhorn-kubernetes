@@ -17,6 +17,16 @@
   delay: 10
   failed_when: longhorn__dm_crypt_module_enabled is failure
 
+- name: Ensure nfs kernel module
+  community.general.modprobe:
+    name: nfs
+    state: present
+  register: longhorn__nfs_module_enabled
+  until: longhorn__nfs_module_enabled is succeeded
+  retries: 10
+  delay: 10
+  failed_when: longhorn__nfs_module_enabled is failure
+
 - name: Ensure iscsi_tcp kernel module
   community.general.modprobe:
     name: iscsi_tcp
