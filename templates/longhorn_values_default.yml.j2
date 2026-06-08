@@ -6,16 +6,22 @@
 # https://github.com/longhorn/longhorn/blob/c1342db002645db4a5ac94a1910c67d76b20d05b/chart/values.yaml
 #
 # Additional important information:
-# https://longhorn.io/docs/1.9.2/best-practices/
-# https://longhorn.io/docs/1.9.2/important-notes
+# https://longhorn.io/docs/1.10.2/best-practices/
+# https://longhorn.io/docs/1.10.2/important-notes
 
 # Changelogs:
-# https://github.com/longhorn/longhorn/releases/tag/v1.9.0
-# https://github.com/longhorn/longhorn/releases/tag/v1.9.1
-# https://github.com/longhorn/longhorn/releases/tag/v1.9.2
+# https://github.com/longhorn/longhorn/releases/tag/v1.10.0
+# https://github.com/longhorn/longhorn/releases/tag/v1.10.1
+# https://github.com/longhorn/longhorn/releases/tag/v1.10.2
 
 csi:
   kubeletRootDir: "/var/lib/kubelet"
+
+image:
+  longhorn:
+    backingImageManager:
+      repository: "{{ longhorn_backing_image_manager_image_repository }}"
+      tag: "{{ longhorn_backing_image_manager_image_tag }}"
 
 # These default settings is only for a Longhorn system that hasn’t been
 # deployed. It has no impact on an existing Longhorn system. Changing

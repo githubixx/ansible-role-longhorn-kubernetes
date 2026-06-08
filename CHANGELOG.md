@@ -5,6 +5,36 @@ SPDX-License-Identifier: GPL-3.0-or-later
 
 # Changelog
 
+## 0.9.0+1.10.2
+
+This is a major release update of Longhorn. Please read Longhorn important notes before upgrading:
+
+- [Longhorn Important Notes 1.10.2](https://longhorn.io/docs/1.10.2/important-notes/)
+- Consider doing a [Longhorn System Backup](https://longhorn.io/docs/1.10.2/advanced-resources/system-backup-restore/backup-longhorn-system/) before the upgrade!
+- Starting with v1.5.0, Longhorn only supports upgrades from one minor version to the next. For example, upgrading from 1.9.x to 1.10.x is supported, but skipping versions (e.g., from 1.8.x to 1.10.x) is not.
+- Longhorn v1.10.x requires Kubernetes v1.25 or later.
+- For upgrades from v1.9.x to v1.10.x, [ensure Longhorn CRDs are migrated](https://longhorn.io/docs/1.10.2/important-notes/#migration-requirement-before-longhorn-v110-upgrade) so only `v1beta2` remains in `status.storedVersions`.
+- Upstream also recommends not upgrading while volumes are `Faulted`, not upgrading with failed `BackingImage` resources present, and creating a Longhorn system backup before the upgrade.
+
+### Changes to the role
+
+- update Longhorn to `v1.10.2`
+- add preflight checks for Kubernetes version and Longhorn CRD storedVersions during upgrade
+- override `backing-image-manager` image to `v1.10.2-hotfix-1` by default
+- Molecule: use own [githubixx Vagrant boxes](https://portal.cloud.hashicorp.com/vagrant/discover/githubixx)
+
+### Further reading
+
+Additional important information:
+
+- [Best practices](https://longhorn.io/docs/1.10.2/best-practices/)
+
+### Changelogs
+
+- [Longhorn v1.10.0 Release Notes](https://github.com/longhorn/longhorn/releases/tag/v1.10.0)
+- [Longhorn v1.10.1 Release Notes](https://github.com/longhorn/longhorn/releases/tag/v1.10.1)
+- [Longhorn v1.10.2 Release Notes](https://github.com/longhorn/longhorn/releases/tag/v1.10.2)
+
 ## 0.8.0+1.9.2
 
 This is a major release update of Longhorn. Please read Longhorn important notes before upgrading:

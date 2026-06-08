@@ -14,6 +14,74 @@
   vars:
     longhorn__label_state: "replace"
 
+- name: Preflight checks before Longhorn upgrade
+  when: longhorn_upgrade_preflight_checks
+  block:
+    - name: Gather Kubernetes node information
+      kubernetes.core.k8s_info:
+        api_version: v1
+        kind: Node
+      run_once: true
+      delegate_to: "{{ longhorn_delegate_to }}"
+      register: longhorn__upgrade_k8s_nodes_info
+
+    - name: Ensure Kubernetes version is supported for Longhorn v1.10.x
+      ansible.builtin.assert:
+        that:
+          - longhorn__upgrade_k8s_nodes_info.resources | length > 0
+          - >-
+            (
+              longhorn__upgrade_k8s_nodes_info.resources
+              | map(attribute='status.nodeInfo.kubeletVersion')
+              | map('regex_replace', '^v([0-9]+)\\.([0-9]+).*$','\\1.\\2')
+              | map('float')
+              | min
+            ) >= 1.25
+        fail_msg: >-
+          Longhorn v1.10.x requires Kubernetes v1.25 or later.
+          Please upgrade your cluster first.
+      run_once: true
+      delegate_to: "{{ longhorn_delegate_to }}"
+
+    - name: Gather Longhorn CRD information
+      when: longhorn_upgrade_check_crd_stored_versions
+      kubernetes.core.k8s_info:
+        api_version: apiextensions.k8s.io/v1
+        kind: CustomResourceDefinition
+        label_selectors:
+          - app.kubernetes.io/name=longhorn
+      run_once: true
+      delegate_to: "{{ longhorn_delegate_to }}"
+      register: longhorn__upgrade_longhorn_crd_info
+
+    - name: Collect Longhorn CRDs that still contain v1beta1
+      when: longhorn_upgrade_check_crd_stored_versions
+      ansible.builtin.set_fact:
+        longhorn__upgrade_crds_with_v1beta1: >-
+          {{
+            longhorn__upgrade_longhorn_crd_info.resources
+            | selectattr('status.storedVersions', 'defined')
+            | selectattr('status.storedVersions', 'contains', 'v1beta1')
+            | map(attribute='metadata.name')
+            | list
+          }}
+      run_once: true
+      delegate_to: "{{ longhorn_delegate_to }}"
+
+    - name: Ensure Longhorn CRDs are migrated away from v1beta1
+      when: longhorn_upgrade_check_crd_stored_versions
+      ansible.builtin.assert:
+        that:
+          - longhorn__upgrade_crds_with_v1beta1 | length == 0
+        fail_msg: >-
+          Longhorn CRD migration required before upgrading to v1.10.x.
+          The following CRDs still contain storedVersion "v1beta1":
+          {{ longhorn__upgrade_crds_with_v1beta1 | join(', ') }}.
+          Please follow Longhorn v1.10.2 Important Notes and migrate all
+          Longhorn CRDs so only "v1beta2" remains in storedVersions.
+      run_once: true
+      delegate_to: "{{ longhorn_delegate_to }}"
+
 - name: Upgrade Longhorn via Helm
   block:
     - name: Create temporary file for Helm values

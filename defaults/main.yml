@@ -3,7 +3,19 @@
 # SPDX-License-Identifier: GPL-3.0-or-later
 
 # Helm chart version
-longhorn_chart_version: "1.9.2"
+longhorn_chart_version: "1.10.2"
+
+# Longhorn v1.10.2 requires a hotfixed backing image manager image to
+# avoid proxy-related backing image upload failures.
+longhorn_backing_image_manager_image_repository: "longhornio/backing-image-manager"
+longhorn_backing_image_manager_image_tag: "v1.10.2-hotfix-1"
+
+# Run preflight checks before upgrading Longhorn.
+longhorn_upgrade_preflight_checks: true
+
+# Ensure Longhorn CRDs no longer contain "v1beta1" in storedVersions
+# before upgrading to Longhorn v1.10.x.
+longhorn_upgrade_check_crd_stored_versions: true
 
 # Helm release name
 longhorn_release_name: "longhorn"

@@ -43,16 +43,6 @@
         reboot_required_pkgs
       ansible.builtin.reboot:
 
-- name: Ignore PEP 668 because it is silly
-  hosts: k8s_assets
-  remote_user: vagrant
-  become: true
-  tasks:
-    - name: Remove /usr/lib/python3.12/EXTERNALLY-MANAGED
-      ansible.builtin.file:
-        path: "/usr/lib/python3.12/EXTERNALLY-MANAGED"
-        state: absent
-
 - name: Setup Kubernetes client tooling
   hosts: k8s_assets
   become: true
@@ -69,12 +59,7 @@
       vars:
         packages:
           - conntrack
-          - python3-pip
-
-    - name: Install kubernetes Python package
-      ansible.builtin.pip:
-        name: kubernetes
-        state: present
+          - python3-kubernetes
 
     - name: Install Helm role
       ansible.builtin.include_role:
