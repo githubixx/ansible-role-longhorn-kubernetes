@@ -45,23 +45,25 @@
     state: "started"
     enabled: true
 
-- name: Ensure multipathd conf.d directory
-  ansible.builtin.file:
-    path: "{{ longhorn_multipathd_blacklist_directory }}"
-    state: directory
-    mode: "{{ longhorn_multipathd_blacklist_directory_perm }}"
-    owner: "root"
-    group: "root"
-
 - name: Ensure multipathd blacklist for Longhorn
   when:
-    - longhorn_multipathd_blacklist_directory
-    - longhorn_multipathd_blacklist_file
-  ansible.builtin.copy:
-    src: "files/{{ longhorn_multipathd_blacklist_directory }}/{{ longhorn_multipathd_blacklist_file }}"
-    dest: "/{{ longhorn_multipathd_blacklist_directory }}/{{ longhorn_multipathd_blacklist_file }}"
-    mode: "{{ longhorn_multipathd_blacklist_file_perm }}"
-    owner: "root"
-    group: "root"
-  notify:
-    - restart multipathd
+    - (longhorn_multipathd_blacklist_directory | default('') | length) > 0
+    - (longhorn_multipathd_blacklist_file | default('') | length) > 0
+  block:
+    - name: Ensure multipathd conf.d directory
+      ansible.builtin.file:
+        path: "{{ longhorn_multipathd_blacklist_directory }}"
+        state: directory
+        mode: "{{ longhorn_multipathd_blacklist_directory_perm }}"
+        owner: "root"
+        group: "root"
+
+    - name: Ensure multipathd blacklist file for Longhorn
+      ansible.builtin.copy:
+        src: "{{ longhorn_multipathd_blacklist_directory | regex_replace('^/', '') }}/{{ longhorn_multipathd_blacklist_file }}"
+        dest: "{{ longhorn_multipathd_blacklist_directory }}/{{ longhorn_multipathd_blacklist_file }}"
+        mode: "{{ longhorn_multipathd_blacklist_file_perm }}"
+        owner: "root"
+        group: "root"
+      notify:
+        - restart multipathd

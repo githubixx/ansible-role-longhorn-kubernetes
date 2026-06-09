@@ -5,16 +5,10 @@
 - name: Create list of hosts
   when:
     - longhorn_label_nodes
-    - longhorn_node_selector_user is defined
+    - longhorn_node_selector_system is defined
   ansible.builtin.set_fact:
-    longhorn__hostnames_system: |-
-      [
-      {% for host in groups[longhorn_nodes_system] %}
-        {
-          "hostname": "{{ host.split('.')[0] }}",
-        },
-      {% endfor %}
-      ]
+    longhorn__hostnames_system: "{{ (longhorn__hostnames_system | default([])) + [{'hostname': item.split('.')[0]}] }}"
+  loop: "{{ groups[longhorn_nodes_system] }}"
   run_once: true
   delegate_to: "{{ longhorn_delegate_to }}"
 

@@ -5,6 +5,12 @@ SPDX-License-Identifier: GPL-3.0-or-later
 
 # Changelog
 
+## 0.9.1+1.10.2
+
+- fix multipathd blacklist handling on Ubuntu by guarding optional variables and using the correct source and destination paths
+- fix system and user node label host list generation for Longhorn managed components
+- replace injected `ansible_*` facts usage with `ansible_facts[...]` (prepares for ansible-core 2.24 where `INJECT_FACTS_AS_VARS` default changes)
+
 ## 0.9.0+1.10.2
 
 This is a major release update of Longhorn. Please read Longhorn important notes before upgrading:

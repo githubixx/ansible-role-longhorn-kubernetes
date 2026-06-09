@@ -7,14 +7,8 @@
     - longhorn_label_nodes
     - longhorn_node_selector_user is defined
   ansible.builtin.set_fact:
-    longhorn__hostnames_user: |-
-      [
-      {% for host in groups[longhorn_nodes_user] %}
-        {
-          "hostname": "{{ host.split('.')[0] }}",
-        },
-      {% endfor %}
-      ]
+    longhorn__hostnames_user: "{{ (longhorn__hostnames_user | default([])) + [{'hostname': item.split('.')[0]}] }}"
+  loop: "{{ groups[longhorn_nodes_user] }}"
   run_once: true
   delegate_to: "{{ longhorn_delegate_to }}"
 
